@@ -22,6 +22,9 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "ApplicationCode.h"
+#include <stdio.h>
+extern void initialise_monitor_handles(void);
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -79,7 +82,7 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
+	initialise_monitor_handles();
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -112,6 +115,7 @@ int main(void)
   /* USER CODE END 2 */
 #if COMPILE_TOUCH_FUNCTIONS == 1 // This block will need to be deleted
   LCD_Touch_Polling_Demo(); // This function Will not return
+  //240x320
 #endif
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
