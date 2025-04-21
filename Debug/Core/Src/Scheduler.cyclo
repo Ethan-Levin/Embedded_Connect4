@@ -1,0 +1,3 @@
+../Core/Src/Scheduler.c:5:10:getScheduledEvents	1
+../Core/Src/Scheduler.c:9:6:addSchedulerEvent	1
+../Core/Src/Scheduler.c:14:6:removeSchedulerEvent	1

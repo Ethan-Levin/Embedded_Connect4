@@ -41,12 +41,15 @@
 
 #define CIRCLE_RADIUS           12
 
+#define RIGHT_MOST_COLUMN       6
+#define LEFT_MOST_COLUMN        0
+
 #define PLAYER_YELLOW           1
 #define PLAYER_RED            	2
 
 #define CHIP_Y_POS				((LCD_PIXEL_HEIGHT-SQUARE_SIZE*ROWS)/2)
-#define CHIP_X_POS(COLUMN)		(SQUARE_SIZE * COLUMN)
-#define CHIP_X_START_COLUMN		4
+#define CHIP_X_POS(COLUMN)		(SQUARE_SIZE/2 + SQUARE_SIZE * COLUMN)
+#define CHIP_X_START_COLUMN		3
 
 #define RIGHT                   0
 #define LEFT                    1

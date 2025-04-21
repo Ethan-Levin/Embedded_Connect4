@@ -31,12 +31,13 @@ uint16_t frameBuffer[LCD_PIXEL_WIDTH*LCD_PIXEL_HEIGHT] = {0};			//16bpp pixel fo
 
 static grid_t grid[7][6];
 static chip_to_drop_t chip;
-uint8_t playerTurn;
+uint8_t playerTurn = PLAYER_RED;
 
 void Init_Chip_To_Drop(){
 	chip.yPos        = CHIP_Y_POS;
 	chip.xPos        = CHIP_X_POS(CHIP_X_START_COLUMN);
 	chip.column      = CHIP_X_START_COLUMN;
+	LCD_Draw_Chip_To_Drop();
 }
 
 void Init_Grid_Pos(){
@@ -48,7 +49,7 @@ void Init_Grid_Pos(){
 	}
 	for(uint8_t i = 0; i<7; i++){
 		for(uint8_t j =0; j<6; j++){
-			LCD_Draw_Circle_Fill(grid[i][j].xPos, LCD_PIXEL_HEIGHT-grid[i][j].yPos, CIRCLE_RADIUS, LCD_COLOR_RED);
+			//LCD_Draw_Circle_Fill(grid[i][j].xPos, LCD_PIXEL_HEIGHT-grid[i][j].yPos, CIRCLE_RADIUS, LCD_COLOR_RED);
 		}
 	}
 }
@@ -242,12 +243,12 @@ void LCD_Clear_Chip_To_Drop(){
 }
 
 void LCD_Update_Chip_To_Drop_Column(int direction){
-	if(direction == RIGHT && chip.column != 7){
+	if(direction == RIGHT && chip.column != RIGHT_MOST_COLUMN){
 		//if its the 7th most do nothing
 		chip.column = chip.column + 1;
 		chip.xPos   = CHIP_X_POS(chip.column);
 	}
-	else if(direction == LEFT && chip.column != 1){
+	else if(direction == LEFT && chip.column != LEFT_MOST_COLUMN){
 		//if its the 1st column do nothing
 		chip.column = chip.column - 1;
 		chip.xPos   = CHIP_X_POS(chip.column);
@@ -256,8 +257,9 @@ void LCD_Update_Chip_To_Drop_Column(int direction){
 
 void LCD_Update_Chip_To_Drop(int dir){
 	LCD_Clear_Chip_To_Drop();
+	//HAL_Delay(10);
 	LCD_Update_Chip_To_Drop_Column(dir);
-	LCD_Draw_Chip_To_Drop(;)
+	LCD_Draw_Chip_To_Drop();
 }
 
 void LCD_Draw_Pixel(uint16_t x, uint16_t y, uint16_t color)

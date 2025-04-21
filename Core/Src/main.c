@@ -109,17 +109,29 @@ int main(void)
   /* USER CODE BEGIN 2 */
   ApplicationInit(); // Initializes the LCD functionality
   LCD_Visual_Demo();
-  HAL_Delay(5000);
+  //HAL_Delay(5000);
+  uint32_t eventsToRun;
   /* USER CODE END 2 */
 #if COMPILE_TOUCH_FUNCTIONS == 1 // This block will need to be deleted
-  LCD_Touch_Polling_Demo(); // This function Will not return
-  //240x320
+  //LCD_Touch_Polling_Demo(); // This function Will not return
 #endif
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
     /* USER CODE END WHILE */
+	  eventsToRun = getScheduledEvents();
+
+	  if(eventsToRun & START_MENU_EVENT){
+
+	  }
+	  if(eventsToRun & POLLING_GAME_EVENT){
+		  LCD_Touch_Polling_Game();
+		  HAL_Delay(100);
+	  }
+	  if(eventsToRun & SCORE_SCREEN_EVENT){
+
+	  }
 
     /* USER CODE BEGIN 3 */
   }

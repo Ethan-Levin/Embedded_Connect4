@@ -23,6 +23,12 @@ void ApplicationInit(void)
     LTCD_Layer_Init(0);
     LCD_Clear(0,LCD_COLOR_WHITE);
 
+    buttonInit();
+    //DONT FORGOT TO REMOVE THIS LATER
+    addSchedulerEvent(POLLING_GAME_EVENT);
+
+
+
     #if COMPILE_TOUCH_FUNCTIONS == 1
 	InitializeLCDTouch();
 
@@ -37,6 +43,10 @@ void LCD_Visual_Demo(void)
 {
 	LCD_Draw_Game_Grid();
 	//visualDemo();
+}
+
+void buttonInit(){
+	Button_Init();
 }
 
 #if COMPILE_TOUCH_FUNCTIONS == 1
@@ -71,4 +81,30 @@ void LCD_TOUCH_POLLING_DEMO(){
 				LCD_Clear(0, LCD_COLOR_GREEN);
 			}
 		}
+}
+
+void LCD_Touch_Polling_Game(){
+	/* If touch pressed */
+	if (returnTouchStateAndLocation(&StaticTouchData) == STMPE811_State_Pressed) {
+		/* Touch valid */
+		if(StaticTouchData.x < LCD_PIXEL_WIDTH/2){
+			//left side
+			LCD_Update_Chip_To_Drop(LEFT);
+		}
+		else{
+			//right side
+			LCD_Update_Chip_To_Drop(RIGHT);
+		}
+	} else {
+		/* Touch not pressed */
+		//do nothing
+	}
+}
+
+
+void EXTI0_IRQHandler(){
+	HAL_NVIC_DisableIRQ(EXTI0_IRQn);
+	LCD_Clear(0, LCD_COLOR_RED);
+	__HAL_GPIO_EXTI_CLEAR_FLAG(GPIO_PIN_0);
+	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 }
