@@ -41,6 +41,15 @@
 
 #define CIRCLE_RADIUS           12
 
+#define PLAYER_YELLOW           1
+#define PLAYER_RED            	2
+
+#define CHIP_Y_POS				((LCD_PIXEL_HEIGHT-SQUARE_SIZE*ROWS)/2)
+#define CHIP_X_POS(COLUMN)		(SQUARE_SIZE * COLUMN)
+#define CHIP_X_START_COLUMN		4
+
+#define RIGHT                   0
+#define LEFT                    1
 /* Timing configuration from datahseet
   HSYNC=10 (9+1)
   HBP=20 (29-10+1)
@@ -65,10 +74,13 @@
 typedef struct{
 	uint8_t xPos;
 	uint8_t yPos;
-}grid_pos_t;
+}grid_t;
 
-
-
+typedef struct{
+	uint8_t column;
+	uint8_t xPos;
+	uint8_t yPos;
+}chip_to_drop_t;
 
 
 void LTCD__Init(void);
@@ -95,7 +107,17 @@ void LCD_Error_Handler(void);
 // Demo using provided functions
 void visualDemo(void);
 
-void Game_Grid();
+void Init_Grid_Pos();
+
+void LCD_Draw_Game_Grid();
+
+//Chip_To_Drop functions
+void Init_Chip_To_Drop();
+void LCD_Draw_Chip_To_Drop();
+void LCD_Clear_Chip_To_Drop();
+void LCD_Update_Chip_To_Drop_Column(int direction);
+void LCD_Update_Chip_To_Drop(int direction);
+
 
 void LCD_Error_Handler(void);
 

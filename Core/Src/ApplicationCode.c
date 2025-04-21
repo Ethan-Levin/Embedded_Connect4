@@ -35,7 +35,7 @@ void ApplicationInit(void)
 
 void LCD_Visual_Demo(void)
 {
-	Game_Grid();
+	LCD_Draw_Game_Grid();
 	//visualDemo();
 }
 

@@ -29,20 +29,26 @@ static uint16_t CurrentTextColor   = 0xFFFF;
 //Someone from STM said it was "often accessed" a 1-dim array, and not a 2d array. However you still access it like a 2dim array,  using fb[y*W+x] instead of fb[y][x].
 uint16_t frameBuffer[LCD_PIXEL_WIDTH*LCD_PIXEL_HEIGHT] = {0};			//16bpp pixel format.
 
-static grid_pos_t grid_pos[7][6];
+static grid_t grid[7][6];
+static chip_to_drop_t chip;
+uint8_t playerTurn;
+
+void Init_Chip_To_Drop(){
+	chip.yPos        = CHIP_Y_POS;
+	chip.xPos        = CHIP_X_POS(CHIP_X_START_COLUMN);
+	chip.column      = CHIP_X_START_COLUMN;
+}
 
 void Init_Grid_Pos(){
-
-
 	for(uint8_t i = 0; i<7; i++){
 		for(uint8_t j =0; j<6; j++){
-			grid_pos[i][j].xPos = SQUARE_SIZE/2+SQUARE_SIZE*i;
-			grid_pos[i][j].yPos = SQUARE_SIZE/2 + SQUARE_SIZE*j;
+			grid[i][j].xPos = SQUARE_SIZE/2+SQUARE_SIZE*i;
+			grid[i][j].yPos = SQUARE_SIZE/2 + SQUARE_SIZE*j;
 		}
 	}
 	for(uint8_t i = 0; i<7; i++){
 		for(uint8_t j =0; j<6; j++){
-			LCD_Draw_Circle_Fill(grid_pos[i][j].xPos, 320-grid_pos[i][j].yPos, CIRCLE_RADIUS, LCD_COLOR_RED);
+			LCD_Draw_Circle_Fill(grid[i][j].xPos, LCD_PIXEL_HEIGHT-grid[i][j].yPos, CIRCLE_RADIUS, LCD_COLOR_RED);
 		}
 	}
 }
@@ -221,6 +227,39 @@ void LTCD__Init(void)
  * All drawing consists of is manipulating the array.
  * Adding input sanitation should probably be done.
  */
+void LCD_Draw_Chip_To_Drop(){
+	if(playerTurn == PLAYER_RED){
+		LCD_Draw_Circle_Fill(chip.xPos, chip.yPos, CIRCLE_RADIUS, LCD_COLOR_RED);
+	}
+	else if(playerTurn == PLAYER_YELLOW){
+		LCD_Draw_Circle_Fill(chip.xPos, chip.yPos, CIRCLE_RADIUS, LCD_COLOR_YELLOW);
+	}
+	//if nothing is updating then there is an error with playerTurn
+}
+
+void LCD_Clear_Chip_To_Drop(){
+	LCD_Draw_Circle_Fill(chip.xPos, chip.yPos, CIRCLE_RADIUS, LCD_COLOR_WHITE);
+}
+
+void LCD_Update_Chip_To_Drop_Column(int direction){
+	if(direction == RIGHT && chip.column != 7){
+		//if its the 7th most do nothing
+		chip.column = chip.column + 1;
+		chip.xPos   = CHIP_X_POS(chip.column);
+	}
+	else if(direction == LEFT && chip.column != 1){
+		//if its the 1st column do nothing
+		chip.column = chip.column - 1;
+		chip.xPos   = CHIP_X_POS(chip.column);
+	}
+}
+
+void LCD_Update_Chip_To_Drop(int dir){
+	LCD_Clear_Chip_To_Drop();
+	LCD_Update_Chip_To_Drop_Column(dir);
+	LCD_Draw_Chip_To_Drop(;)
+}
+
 void LCD_Draw_Pixel(uint16_t x, uint16_t y, uint16_t color)
 {
 	frameBuffer[y*LCD_PIXEL_WIDTH+x] = color;  //You cannot do x*y to set the pixel.
@@ -310,7 +349,7 @@ void LCD_DisplayChar(uint16_t Xpos, uint16_t Ypos, uint8_t Ascii)
   LCD_Draw_Char(Xpos, Ypos, &LCD_Currentfonts->table[Ascii * LCD_Currentfonts->Height]);
 }
 
-void Game_Grid(){
+void LCD_Draw_Game_Grid(){
 //	uint16_t x;
 //	uint16_t y;
 
@@ -325,6 +364,7 @@ void Game_Grid(){
 	}
 
 	Init_Grid_Pos();
+	Init_Chip_To_Drop();
 }
 
 void visualDemo(void)
