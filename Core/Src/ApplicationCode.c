@@ -35,7 +35,8 @@ void ApplicationInit(void)
 
 void LCD_Visual_Demo(void)
 {
-	visualDemo();
+	Game_Grid();
+	//visualDemo();
 }
 
 #if COMPILE_TOUCH_FUNCTIONS == 1
@@ -57,3 +58,17 @@ void LCD_Touch_Polling_Demo(void)
 }
 #endif // COMPILE_TOUCH_FUNCTIONS
 
+void LCD_TOUCH_POLLING_DEMO(){
+	while (1) {
+			/* If touch pressed */
+			if (returnTouchStateAndLocation(&StaticTouchData) == STMPE811_State_Pressed) {
+				/* Touch valid */
+				printf("\nX: %03d\nY: %03d\n", StaticTouchData.x, StaticTouchData.y);
+				LCD_Clear(0, LCD_COLOR_RED);
+			} else {
+				/* Touch not pressed */
+				printf("Not Pressed\n\n");
+				LCD_Clear(0, LCD_COLOR_GREEN);
+			}
+		}
+}

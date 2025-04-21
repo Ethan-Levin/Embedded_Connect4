@@ -33,6 +33,14 @@
 #define LCD_COLOR_CYAN          0x7FFF
 #define LCD_COLOR_YELLOW        0xFFE0
 
+#define SQUARE_SIZE             34
+#define ROWS					6
+#define COLUMNS					7
+#define GRID_OFFSET_VERTICAL    (LCD_PIXEL_WIDTH-COLUMNS*SQUARE_SIZE)
+#define GRID_OFFSET_HORIZONTAL  (LCD_PIXEL_HEIGHT-ROWS*SQUARE_SIZE)
+
+#define CIRCLE_RADIUS           12
+
 /* Timing configuration from datahseet
   HSYNC=10 (9+1)
   HBP=20 (29-10+1)
@@ -54,6 +62,15 @@
 #define  LCD_PIXEL_HEIGHT   ((uint16_t)320)
 #define  LCD_PIXELS		     ((uint32_t)LCD_PIXEL_WIDTH * (uint32_t)LCD_PIXEL_HEIGHT)
 
+typedef struct{
+	uint8_t xPos;
+	uint8_t yPos;
+}grid_pos_t;
+
+
+
+
+
 void LTCD__Init(void);
 void LTCD_Layer_Init(uint8_t LayerIndex);
 
@@ -67,12 +84,18 @@ void LCD_Draw_Circle_Fill(uint16_t Xpos, uint16_t Ypos, uint16_t radius, uint16_
 
 // Draw Vertical Line
 void LCD_Draw_Vertical_Line(uint16_t x, uint16_t y, uint16_t len, uint16_t color);
+
+// Draw Horizontal Line
+void LCD_Draw_Horizontal_Line(uint16_t x, uint16_t y, uint16_t len, uint16_t color);
+
 void LCD_Clear(uint8_t LayerIndex, uint16_t Color);
 
 void LCD_Error_Handler(void);
 
 // Demo using provided functions
 void visualDemo(void);
+
+void Game_Grid();
 
 void LCD_Error_Handler(void);
 

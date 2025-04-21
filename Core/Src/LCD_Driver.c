@@ -29,6 +29,23 @@ static uint16_t CurrentTextColor   = 0xFFFF;
 //Someone from STM said it was "often accessed" a 1-dim array, and not a 2d array. However you still access it like a 2dim array,  using fb[y*W+x] instead of fb[y][x].
 uint16_t frameBuffer[LCD_PIXEL_WIDTH*LCD_PIXEL_HEIGHT] = {0};			//16bpp pixel format.
 
+static grid_pos_t grid_pos[7][6];
+
+void Init_Grid_Pos(){
+
+
+	for(uint8_t i = 0; i<7; i++){
+		for(uint8_t j =0; j<6; j++){
+			grid_pos[i][j].xPos = SQUARE_SIZE/2+SQUARE_SIZE*i;
+			grid_pos[i][j].yPos = SQUARE_SIZE/2 + SQUARE_SIZE*j;
+		}
+	}
+	for(uint8_t i = 0; i<7; i++){
+		for(uint8_t j =0; j<6; j++){
+			LCD_Draw_Circle_Fill(grid_pos[i][j].xPos, 320-grid_pos[i][j].yPos, CIRCLE_RADIUS, LCD_COLOR_RED);
+		}
+	}
+}
 
 void LCD_GPIO_Init(void)
 {
@@ -236,6 +253,14 @@ void LCD_Draw_Vertical_Line(uint16_t x, uint16_t y, uint16_t len, uint16_t color
   }
 }
 
+void LCD_Draw_Horizontal_Line(uint16_t x, uint16_t y, uint16_t len, uint16_t color)
+{
+  for (uint16_t i = 0; i < len; i++)
+  {
+	  LCD_Draw_Pixel(i+x, y, color);
+  }
+}
+
 void LCD_Clear(uint8_t LayerIndex, uint16_t Color)
 {
 	if (LayerIndex == 0){
@@ -285,6 +310,23 @@ void LCD_DisplayChar(uint16_t Xpos, uint16_t Ypos, uint8_t Ascii)
   LCD_Draw_Char(Xpos, Ypos, &LCD_Currentfonts->table[Ascii * LCD_Currentfonts->Height]);
 }
 
+void Game_Grid(){
+//	uint16_t x;
+//	uint16_t y;
+
+	for(uint8_t i=1; i<7; i++){
+		LCD_Draw_Vertical_Line(SQUARE_SIZE*i,GRID_OFFSET_HORIZONTAL,SQUARE_SIZE*ROWS,LCD_COLOR_BLACK);
+		//each tile is 34x34 so 180 is 6 height
+		//15 is the offset from the edge, 34 is the size
+	}
+	for(uint8_t i =1; i<7; i++){
+		LCD_Draw_Horizontal_Line(0,LCD_PIXEL_HEIGHT-(SQUARE_SIZE*i),LCD_PIXEL_WIDTH,LCD_COLOR_BLACK);
+		//want each horizontal line to go across the screen
+	}
+
+	Init_Grid_Pos();
+}
+
 void visualDemo(void)
 {
 	uint16_t x;
@@ -309,6 +351,8 @@ void visualDemo(void)
 	LCD_Draw_Vertical_Line(10,10,250,LCD_COLOR_MAGENTA);
 	HAL_Delay(1500);
 	LCD_Draw_Vertical_Line(230,10,250,LCD_COLOR_MAGENTA);
+	HAL_Delay(1500);
+	LCD_Draw_Horizontal_Line(230,10,LCD_PIXEL_WIDTH,LCD_COLOR_MAGENTA);
 	HAL_Delay(1500);
 
 	LCD_Draw_Circle_Fill(125,150,20,LCD_COLOR_BLACK);
