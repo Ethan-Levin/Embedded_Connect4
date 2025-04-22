@@ -104,7 +104,7 @@ void LCD_Touch_Polling_Game(){
 
 void EXTI0_IRQHandler(){
 	HAL_NVIC_DisableIRQ(EXTI0_IRQn);
-	LCD_Clear(0, LCD_COLOR_RED);
+	LCD_Insert_Chip_Game_Grid();
 	__HAL_GPIO_EXTI_CLEAR_FLAG(GPIO_PIN_0);
 	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 }

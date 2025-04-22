@@ -41,17 +41,19 @@ void Init_Chip_To_Drop(){
 }
 
 void Init_Grid_Pos(){
-	for(uint8_t i = 0; i<7; i++){
-		for(uint8_t j =0; j<6; j++){
+	for(uint8_t i = 0; i<COLUMNS; i++){
+		for(uint8_t j =0; j<ROWS; j++){
 			grid[i][j].xPos = SQUARE_SIZE/2+SQUARE_SIZE*i;
 			grid[i][j].yPos = SQUARE_SIZE/2 + SQUARE_SIZE*j;
+			grid[i][j].playerColor = PLAYER_EMPTY;
 		}
 	}
-	for(uint8_t i = 0; i<7; i++){
-		for(uint8_t j =0; j<6; j++){
-			//LCD_Draw_Circle_Fill(grid[i][j].xPos, LCD_PIXEL_HEIGHT-grid[i][j].yPos, CIRCLE_RADIUS, LCD_COLOR_RED);
-		}
-	}
+//	for(uint8_t i = 0; i<COLUNS; i++){
+//		for(uint8_t j =0; j<ROWS; j++){
+//			LCD_Draw_Circle_Fill(grid[i][j].xPos, LCD_PIXEL_HEIGHT-grid[i][j].yPos, CIRCLE_RADIUS, LCD_COLOR_RED);
+//		}
+//	}
+	//test code
 }
 
 void LCD_GPIO_Init(void)
@@ -349,6 +351,60 @@ void LCD_DisplayChar(uint16_t Xpos, uint16_t Ypos, uint8_t Ascii)
 {
   Ascii -= 32;
   LCD_Draw_Char(Xpos, Ypos, &LCD_Currentfonts->table[Ascii * LCD_Currentfonts->Height]);
+}
+
+bool LCD_Space_Available_Game_Grid(){
+	if(grid[chip.column][5].playerColor != PLAYER_EMPTY){
+	//5 is the highest row so we need to see if its occupied and if it is false
+		return false;
+	}
+	//if there is space return true
+	return true;
+}
+
+uint8_t LCD_Get_Row_Game_Grid(){
+	for(int i = 0; i<ROWS; i++){
+		if(grid[chip.column][i].playerColor == PLAYER_EMPTY){
+			//returns the first empty square
+			return i;
+		}
+	}
+	return -1; //out of bounds but should not occur
+}
+
+void LCD_Game_Won(){
+
+}
+
+void LCD_Insert_Chip_Game_Grid(){
+	if((LCD_Space_Available_Game_Grid())){
+		//check for space
+		uint8_t row = LCD_Get_Row_Game_Grid();
+		//returns the highest row for a column
+		if(playerTurn == PLAYER_RED){
+			//if its Reds turn it will draw red
+			LCD_Draw_Circle_Fill(grid[chip.column][row].xPos, LCD_PIXEL_HEIGHT-grid[chip.column][row].yPos, CIRCLE_RADIUS, LCD_COLOR_RED);
+			grid[chip.column][row].playerColor = PLAYER_RED;
+			playerTurn = PLAYER_YELLOW;
+			//update playerTurn to be c other player
+			LCD_Draw_Chip_To_Drop();
+			//Update the display for the chip to drop
+			LCD_Game_Won();
+		}
+		else{
+			//if its Yellows turn it will draw yellow
+			LCD_Draw_Circle_Fill(grid[chip.column][row].xPos, LCD_PIXEL_HEIGHT-grid[chip.column][row].yPos, CIRCLE_RADIUS, LCD_COLOR_YELLOW);
+			grid[chip.column][row].playerColor = PLAYER_YELLOW;
+			//update the memory of the grid
+			playerTurn = PLAYER_RED;
+			//update playerTurn to be c other player
+			LCD_Draw_Chip_To_Drop();
+			//Update the display for the chip to drop
+			LCD_Game_Won();
+			//Check if game is over
+		}
+	}
+
 }
 
 void LCD_Draw_Game_Grid(){

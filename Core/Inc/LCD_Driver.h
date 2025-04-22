@@ -12,6 +12,7 @@
 #include "ili9341.h"
 #include "fonts.h"
 #include "stmpe811.h"
+#include <stdbool.h>
 
 #define COMPILE_TOUCH_FUNCTIONS COMPILE_TOUCH
 #define TOUCH_INTERRUPT_ENABLED COMPILE_TOUCH_INTERRUPT_SUPPORT
@@ -44,6 +45,7 @@
 #define RIGHT_MOST_COLUMN       6
 #define LEFT_MOST_COLUMN        0
 
+#define PLAYER_EMPTY            0
 #define PLAYER_YELLOW           1
 #define PLAYER_RED            	2
 
@@ -77,6 +79,7 @@
 typedef struct{
 	uint8_t xPos;
 	uint8_t yPos;
+	uint8_t playerColor;
 }grid_t;
 
 typedef struct{
@@ -113,6 +116,13 @@ void visualDemo(void);
 void Init_Grid_Pos();
 
 void LCD_Draw_Game_Grid();
+
+void LCD_Game_won();
+
+bool LCD_Space_Available_Game_Grid();
+uint8_t LCD_Get_Row_Game_Grid();
+
+void LCD_Insert_Chip_Game_Grid();
 
 //Chip_To_Drop functions
 void Init_Chip_To_Drop();
