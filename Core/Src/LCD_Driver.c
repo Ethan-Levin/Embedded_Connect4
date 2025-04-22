@@ -49,14 +49,9 @@ void Init_Grid_Pos(){
 			grid[i][j].xPos = SQUARE_SIZE/2+SQUARE_SIZE*i;
 			grid[i][j].yPos = SQUARE_SIZE/2 + SQUARE_SIZE*j;
 			grid[i][j].playerColor = PLAYER_EMPTY;
+			//this clears any old information about the colors from the previous game
 		}
 	}
-//	for(uint8_t i = 0; i<COLUNS; i++){
-//		for(uint8_t j =0; j<ROWS; j++){
-//			LCD_Draw_Circle_Fill(grid[i][j].xPos, LCD_PIXEL_HEIGHT-grid[i][j].yPos, CIRCLE_RADIUS, LCD_COLOR_RED);
-//		}
-//	}
-	//test code
 }
 
 void LCD_GPIO_Init(void)
@@ -289,6 +284,14 @@ void LCD_Draw_Circle_Fill(uint16_t Xpos, uint16_t Ypos, uint16_t radius, uint16_
             }
         }
     }
+}
+
+void LCD_Draw_Rectangle_Fill(uint16_t Xpos, uint16_t Ypos, uint16_t Length, uint16_t Height, uint16_t color){
+	for(int16_t y=0; y<Height; y++){
+		for(int16_t x=0; x<Length; x++){
+			LCD_Draw_Pixel(x+Xpos, y+Ypos, color);
+		}
+	}
 }
 
 void LCD_Draw_Vertical_Line(uint16_t x, uint16_t y, uint16_t len, uint16_t color)
@@ -528,6 +531,7 @@ void LCD_Insert_Chip_Game_Grid(){
 void LCD_Draw_Game_Grid(){
 //	uint16_t x;
 //	uint16_t y;
+	LCD_Draw_Rectangle_Fill(0, GRID_BACKGROUND_YPOS, LCD_PIXEL_WIDTH, SQUARE_SIZE*ROWS, LCD_COLOR_BLUE);
 
 	for(uint8_t i=1; i<7; i++){
 		LCD_Draw_Vertical_Line(SQUARE_SIZE*i,GRID_OFFSET_HORIZONTAL,SQUARE_SIZE*ROWS,LCD_COLOR_BLACK);
@@ -539,9 +543,69 @@ void LCD_Draw_Game_Grid(){
 		//want each horizontal line to go across the screen
 	}
 
+
+
+
 	Init_Grid_Pos();
+	for(uint8_t i = 0; i<COLUMNS; i++){
+		for(uint8_t j =0; j<ROWS; j++){
+			LCD_Draw_Circle_Fill(grid[i][j].xPos, LCD_PIXEL_HEIGHT-grid[i][j].yPos, CIRCLE_RADIUS, LCD_COLOR_WHITE);
+		}
+	}
 	Init_Chip_To_Drop();
 }
+
+void LCD_Draw_Score_Screen(){
+	LCD_Clear(0, LCD_COLOR_GREY);
+
+	LCD_SetTextColor(LCD_COLOR_BLACK);
+	LCD_SetFont(&Font16x24);
+
+	LCD_DisplayChar(95,TIMER_YPOS,'T');
+	LCD_DisplayChar(105,TIMER_YPOS,'i');
+	LCD_DisplayChar(115,TIMER_YPOS,'m');
+	LCD_DisplayChar(130,TIMER_YPOS,'e');
+	LCD_DisplayChar(140,TIMER_YPOS,'r');
+
+	LCD_DisplayChar(95,SCORE_YPOS,'S');
+	LCD_DisplayChar(107,SCORE_YPOS,'c');
+	LCD_DisplayChar(117,SCORE_YPOS,'o');
+	LCD_DisplayChar(127,SCORE_YPOS,'r');
+	LCD_DisplayChar(135,SCORE_YPOS,'e');
+
+	LCD_Draw_Circle_Fill(103, SCORE_YPOS+60, 16, LCD_COLOR_BLACK);
+	LCD_Draw_Circle_Fill(144, SCORE_YPOS+60, 16, LCD_COLOR_BLACK);
+	//Outlines for the circles
+
+	LCD_Draw_Circle_Fill(103, SCORE_YPOS+60, 15, LCD_COLOR_RED);
+	LCD_Draw_Circle_Fill(144, SCORE_YPOS+60, 15, LCD_COLOR_YELLOW);
+
+	uint16_t redScoreToDisplay = '0' + redScore;
+	uint16_t yellowScoreToDisplay = '0' + yellowScore;
+
+	LCD_DisplayChar(97, SCORE_YPOS+51, redScoreToDisplay);
+	LCD_DisplayChar(137, SCORE_YPOS+51, yellowScoreToDisplay);
+	//RIGHT NOW ONLY CAN DISPLAY UP TO 9 FOR BOTH SIDES OTHERWISE OVERFLOW
+	LCD_DisplayChar(116, SCORE_YPOS+48, '-');
+
+	LCD_Draw_Rectangle_Fill(18, RESTART_BUTTON_YPOS-2, 204, 104, LCD_COLOR_BLACK);
+	LCD_Draw_Rectangle_Fill(20, RESTART_BUTTON_YPOS, 200, 100, LCD_COLOR_CYAN);
+	LCD_Draw_Rectangle_Fill(25, RESTART_BUTTON_YPOS+5, 190, 90, LCD_COLOR_BLUE2);
+
+	LCD_DisplayChar(95,  NEW_YPOS,'N');
+	LCD_DisplayChar(110, NEW_YPOS,'E');
+	LCD_DisplayChar(125, NEW_YPOS,'W');
+
+	LCD_DisplayChar(90,  GAME_YPOS,'G');
+	LCD_DisplayChar(105, GAME_YPOS,'A');
+	LCD_DisplayChar(120, GAME_YPOS,'M');
+	LCD_DisplayChar(135, GAME_YPOS,'E');
+
+
+	removeSchedulerEvent(SCORE_SCREEN_EVENT);
+	addSchedulerEvent(POLLING_RESTART_EVENT);
+}
+
 
 void visualDemo(void)
 {

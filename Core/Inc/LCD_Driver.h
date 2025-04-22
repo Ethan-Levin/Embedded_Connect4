@@ -55,8 +55,17 @@
 #define CHIP_X_POS(COLUMN)		(SQUARE_SIZE/2 + SQUARE_SIZE * COLUMN)
 #define CHIP_X_START_COLUMN		3
 
+#define GRID_BACKGROUND_YPOS    (LCD_PIXEL_HEIGHT-SQUARE_SIZE*ROWS)
+
 #define RIGHT                   0
 #define LEFT                    1
+
+#define SCORE_YPOS              80
+#define TIMER_YPOS              20
+#define NEW_YPOS                230
+#define GAME_YPOS               250
+
+#define RESTART_BUTTON_YPOS     200
 /* Timing configuration from datahseet
   HSYNC=10 (9+1)
   HBP=20 (29-10+1)
@@ -99,6 +108,9 @@ void LCD_DisplayChar(uint16_t Xpos, uint16_t Ypos, uint8_t Ascii);
 void LCD_SetTextColor(uint16_t Color);
 void LCD_SetFont(FONT_t *fonts);
 
+
+
+void LCD_Draw_Rectangle_Fill(uint16_t Xpos, uint16_t Ypos, uint16_t Length, uint16_t Height, uint16_t color);
 // Draw Circle Filled
 void LCD_Draw_Circle_Fill(uint16_t Xpos, uint16_t Ypos, uint16_t radius, uint16_t color);
 
@@ -123,8 +135,10 @@ bool LCD_Game_Won_Check_Row(uint8_t row, uint8_t player);
 bool LCD_Game_Won_Check_Column(uint8_t column, uint8_t player);
 bool LCD_Game_Won_Check_Up_Right_Diagonal(uint8_t column, uint8_t row, uint8_t player);
 bool LCD_Game_Won_Check_Up_Left_Diagonal(uint8_t column, uint8_t row, uint8_t player);
-
 bool LCD_Game_won(uint8_t column, uint8_t row, uint8_t player);
+
+void LCD_Draw_Score_Screen();
+
 
 bool LCD_Space_Available_Game_Grid();
 uint8_t LCD_Get_Row_Game_Grid();

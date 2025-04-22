@@ -19,6 +19,8 @@
 void ApplicationInit(void);
 void LCD_Visual_Demo(void);
 
+void LCD_Score_Screen();
+
 void buttonInit();
 
 

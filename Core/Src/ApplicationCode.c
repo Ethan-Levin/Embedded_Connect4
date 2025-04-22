@@ -24,8 +24,6 @@ void ApplicationInit(void)
     LCD_Clear(0,LCD_COLOR_WHITE);
 
     buttonInit();
-    //DONT FORGOT TO REMOVE THIS LATER
-    addSchedulerEvent(POLLING_GAME_EVENT);
 
 
 
@@ -41,8 +39,16 @@ void ApplicationInit(void)
 
 void LCD_Visual_Demo(void)
 {
+	visualDemo();
+}
+
+void LCD_Game_Screen(){
 	LCD_Draw_Game_Grid();
-	//visualDemo();
+}
+
+
+void LCD_Score_Screen(){
+	LCD_Draw_Score_Screen();
 }
 
 void buttonInit(){

@@ -108,7 +108,7 @@ int main(void)
   MX_I2C3_Init();
   /* USER CODE BEGIN 2 */
   ApplicationInit(); // Initializes the LCD functionality
-  LCD_Visual_Demo();
+  //LCD_Visual_Demo();
   //HAL_Delay(5000);
   uint32_t eventsToRun;
   /* USER CODE END 2 */
@@ -117,6 +117,14 @@ int main(void)
 #endif
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
+
+//   addSchedulerEvent(SCORE_SCREEN_EVENT);
+   addSchedulerEvent(POLLING_GAME_EVENT);
+
+
+   LCD_Draw_Game_Grid();
+
   while (1)
   {
     /* USER CODE END WHILE */
@@ -130,6 +138,9 @@ int main(void)
 		  HAL_Delay(100);
 	  }
 	  if(eventsToRun & SCORE_SCREEN_EVENT){
+		  LCD_Score_Screen();
+	  }
+	  if(eventsToRun & POLLING_RESTART_EVENT){
 
 	  }
 
