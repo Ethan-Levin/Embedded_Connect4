@@ -12,6 +12,8 @@
 #include "ili9341.h"
 #include "fonts.h"
 #include "stmpe811.h"
+
+#include "Scheduler.h"
 #include <stdbool.h>
 
 #define COMPILE_TOUCH_FUNCTIONS COMPILE_TOUCH
@@ -122,7 +124,7 @@ bool LCD_Game_Won_Check_Column(uint8_t column, uint8_t player);
 bool LCD_Game_Won_Check_Up_Right_Diagonal(uint8_t column, uint8_t row, uint8_t player);
 bool LCD_Game_Won_Check_Up_Left_Diagonal(uint8_t column, uint8_t row, uint8_t player);
 
-void LCD_Game_won(uint8_t column, uint8_t row, uint8_t player);
+bool LCD_Game_won(uint8_t column, uint8_t row, uint8_t player);
 
 bool LCD_Space_Available_Game_Grid();
 uint8_t LCD_Get_Row_Game_Grid();

@@ -470,20 +470,21 @@ bool LCD_Game_Won_Check_Up_Left_Diagonal(uint8_t column, uint8_t row, uint8_t pl
 	return false;
 }
 
-void LCD_Game_Won(uint8_t column, uint8_t row, uint8_t player){
+bool LCD_Game_Won(uint8_t column, uint8_t row, uint8_t player){
 	//check all adjacent pieces colors
 	if(LCD_Game_Won_Check_Row(row, player)){
-		LCD_Draw_Circle_Fill(150, 150, 10, LCD_COLOR_MAGENTA);
+		return true;
 	}
-	if(LCD_Game_Won_Check_Column(column, player)){
-		LCD_Draw_Circle_Fill(200, 200, 10, LCD_COLOR_GREEN);
+	else if(LCD_Game_Won_Check_Column(column, player)){
+		return true;
 	}
-	if(LCD_Game_Won_Check_Up_Right_Diagonal(column, row, player)){
-		LCD_Draw_Circle_Fill(125, 125, 10, LCD_COLOR_BLUE);
+	else if(LCD_Game_Won_Check_Up_Right_Diagonal(column, row, player)){
+		return true;
 	}
-	if(LCD_Game_Won_Check_Up_Left_Diagonal(column, row, player)){
-		LCD_Draw_Circle_Fill(100, 100, 10, LCD_COLOR_CYAN);
+	else if(LCD_Game_Won_Check_Up_Left_Diagonal(column, row, player)){
+		return true;
 	}
+return false;
 }
 
 void LCD_Insert_Chip_Game_Grid(){
@@ -496,10 +497,14 @@ void LCD_Insert_Chip_Game_Grid(){
 			LCD_Draw_Circle_Fill(grid[chip.column][row].xPos, LCD_PIXEL_HEIGHT-grid[chip.column][row].yPos, CIRCLE_RADIUS, LCD_COLOR_RED);
 			grid[chip.column][row].playerColor = PLAYER_RED;
 			playerTurn = PLAYER_YELLOW;
-			//update playerTurn to be c other player
+			//update playerTurn to be other player
 			LCD_Draw_Chip_To_Drop();
 			//Update the display for the chip to drop
-			LCD_Game_Won(chip.column, row, PLAYER_RED);
+			if(LCD_Game_Won(chip.column, row, PLAYER_RED)){
+				redScore++;
+				removeSchedulerEvent(POLLING_GAME_EVENT);
+				addSchedulerEvent(SCORE_SCREEN_EVENT);
+			}
 		}
 		else{
 			//if its Yellows turn it will draw yellow
@@ -510,8 +515,11 @@ void LCD_Insert_Chip_Game_Grid(){
 			//update playerTurn to be c other player
 			LCD_Draw_Chip_To_Drop();
 			//Update the display for the chip to drop
-			LCD_Game_Won(chip.column, row, PLAYER_YELLOW);
-			//Check if game is over
+			if(LCD_Game_Won(chip.column, row, PLAYER_YELLOW)){
+				yellowScore++;
+				removeSchedulerEvent(POLLING_GAME_EVENT);
+				addSchedulerEvent(SCORE_SCREEN_EVENT);
+			}			//Check if game is over
 		}
 	}
 
