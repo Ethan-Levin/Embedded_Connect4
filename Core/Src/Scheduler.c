@@ -12,5 +12,5 @@ void addSchedulerEvent(uint32_t event_to_schedule){
 
 
 void removeSchedulerEvent(uint32_t event_to_remove){
-	scheduledEvents &= !event_to_remove;//this might be wrong
+	scheduledEvents &= ~event_to_remove;//this might be wrong
 }

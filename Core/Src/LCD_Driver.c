@@ -34,7 +34,6 @@ static chip_to_drop_t chip;
 uint8_t playerTurn         = PLAYER_RED;
 uint8_t redScore          = 0;
 uint8_t yellowScore       = 0;
-uint8_t Consecutive       = 0;
 
 void Init_Chip_To_Drop(){
 	chip.yPos        = CHIP_Y_POS;
@@ -43,7 +42,7 @@ void Init_Chip_To_Drop(){
 	LCD_Draw_Chip_To_Drop();
 }
 
-void Init_Grid_Pos(){
+void Init_Grid(){
 	for(uint8_t i = 0; i<COLUMNS; i++){
 		for(uint8_t j =0; j<ROWS; j++){
 			grid[i][j].xPos = SQUARE_SIZE/2+SQUARE_SIZE*i;
@@ -380,7 +379,7 @@ uint8_t LCD_Get_Row_Game_Grid(){
 
 
 bool LCD_Game_Won_Check_Row(uint8_t row, uint8_t player){
-	Consecutive = 0;
+	uint8_t Consecutive = 0;
 	//Resets consecutive
 	for(int i=0; i<COLUMNS; i++){
 		if(grid[i][row].playerColor == player){
@@ -399,7 +398,7 @@ bool LCD_Game_Won_Check_Row(uint8_t row, uint8_t player){
 }
 
 bool LCD_Game_Won_Check_Column(uint8_t column, uint8_t player){
-	Consecutive = 0;
+	uint8_t Consecutive = 0;
 	for(int j=0; j<ROWS; j++){
 		if(grid[column][j].playerColor == player){
 			Consecutive++;
@@ -418,10 +417,9 @@ bool LCD_Game_Won_Check_Column(uint8_t column, uint8_t player){
 
 
 bool LCD_Game_Won_Check_Up_Right_Diagonal(uint8_t column, uint8_t row, uint8_t player){
-	Consecutive = 0;
-	//Resets consecutive
+	uint8_t Consecutive = 0;
 	//need to find the bottom left spot and will go up right from there
-	while( (row  > 0) && (column >= 0) ){
+	while( (row  > 0) && (column > 0) ){
 		//look until we get to the bottom left
 		row--;
 		column--;
@@ -446,8 +444,7 @@ bool LCD_Game_Won_Check_Up_Right_Diagonal(uint8_t column, uint8_t row, uint8_t p
 }
 
 bool LCD_Game_Won_Check_Up_Left_Diagonal(uint8_t column, uint8_t row, uint8_t player){
-	Consecutive = 0;
-	//Reset consecutive
+	uint8_t Consecutive = 0;
 	//need to find the bottom left spot and will go up right from there
 	while( (row > 0) && (column + 1 < COLUMNS) ){
 		//loop until bottom right, stop once we might go out of bounds (-1 or COLUMNS)
@@ -455,7 +452,7 @@ bool LCD_Game_Won_Check_Up_Left_Diagonal(uint8_t column, uint8_t row, uint8_t pl
 		column++;
 	}
 
-	while(row < ROWS && column > 0){
+	while(row < ROWS && column >= 0){
 		//keep going until we encounter top right edge
 		if(grid[column][row].playerColor == player){
 			Consecutive++;
@@ -527,10 +524,19 @@ void LCD_Insert_Chip_Game_Grid(){
 	}
 
 }
+void LCD_Draw_Start_Screen(){
+	LCD_Clear(0, LCD_COLOR_BLACK);
+	addSchedulerEvent(POLLING_MODE_SELECT_EVENT);
+	removeSchedulerEvent(START_MENU_EVENT);
+}
 
 void LCD_Draw_Game_Grid(){
-//	uint16_t x;
-//	uint16_t y;
+	LCD_Clear(0, LCD_COLOR_WHITE);
+	//Clears screen
+
+	Init_Grid();
+	Init_Chip_To_Drop();
+
 	LCD_Draw_Rectangle_Fill(0, GRID_BACKGROUND_YPOS, LCD_PIXEL_WIDTH, SQUARE_SIZE*ROWS, LCD_COLOR_BLUE);
 
 	for(uint8_t i=1; i<7; i++){
@@ -542,17 +548,13 @@ void LCD_Draw_Game_Grid(){
 		LCD_Draw_Horizontal_Line(0,LCD_PIXEL_HEIGHT-(SQUARE_SIZE*i),LCD_PIXEL_WIDTH,LCD_COLOR_BLACK);
 		//want each horizontal line to go across the screen
 	}
-
-
-
-
-	Init_Grid_Pos();
 	for(uint8_t i = 0; i<COLUMNS; i++){
 		for(uint8_t j =0; j<ROWS; j++){
 			LCD_Draw_Circle_Fill(grid[i][j].xPos, LCD_PIXEL_HEIGHT-grid[i][j].yPos, CIRCLE_RADIUS, LCD_COLOR_WHITE);
 		}
 	}
-	Init_Chip_To_Drop();
+	addSchedulerEvent(POLLING_GAME_EVENT);
+	removeSchedulerEvent(BUILD_NEW_GAME_EVENT);
 }
 
 void LCD_Draw_Score_Screen(){

@@ -25,8 +25,6 @@ void ApplicationInit(void)
 
     buttonInit();
 
-
-
     #if COMPILE_TOUCH_FUNCTIONS == 1
 	InitializeLCDTouch();
 
@@ -40,6 +38,10 @@ void ApplicationInit(void)
 void LCD_Visual_Demo(void)
 {
 	visualDemo();
+}
+
+void LCD_Start_Screen(){
+	LCD_Draw_Start_Screen();
 }
 
 void LCD_Game_Screen(){
@@ -104,6 +106,28 @@ void LCD_Touch_Polling_Game(){
 	} else {
 		/* Touch not pressed */
 		//do nothing
+	}
+}
+
+void LCD_Polling_Restart(){
+	if (returnTouchStateAndLocation(&StaticTouchData) == STMPE811_State_Pressed) {
+		/* Touch valid */
+		if(StaticTouchData.y < LCD_PIXEL_HEIGHT/2){
+			//Bottom half
+			addSchedulerEvent(START_MENU_EVENT);
+			removeSchedulerEvent(POLLING_RESTART_EVENT);
+		}
+	}
+}
+
+void LCD_Polling_Mode(){
+	if (returnTouchStateAndLocation(&StaticTouchData) == STMPE811_State_Pressed) {
+		/* Touch valid */
+		if(StaticTouchData.x < LCD_PIXEL_WIDTH/2){
+			//Bottom half
+			addSchedulerEvent(BUILD_NEW_GAME_EVENT);
+			removeSchedulerEvent(POLLING_MODE_SELECT_EVENT);
+		}
 	}
 }
 

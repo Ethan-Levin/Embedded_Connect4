@@ -127,17 +127,16 @@ void LCD_Error_Handler(void);
 // Demo using provided functions
 void visualDemo(void);
 
-void Init_Grid_Pos();
-
-void LCD_Draw_Game_Grid();
-
 bool LCD_Game_Won_Check_Row(uint8_t row, uint8_t player);
 bool LCD_Game_Won_Check_Column(uint8_t column, uint8_t player);
 bool LCD_Game_Won_Check_Up_Right_Diagonal(uint8_t column, uint8_t row, uint8_t player);
 bool LCD_Game_Won_Check_Up_Left_Diagonal(uint8_t column, uint8_t row, uint8_t player);
 bool LCD_Game_won(uint8_t column, uint8_t row, uint8_t player);
 
+void LCD_Draw_Start_Screen();
 void LCD_Draw_Score_Screen();
+void LCD_Draw_Game_Grid();
+void Init_Grid();
 
 
 bool LCD_Space_Available_Game_Grid();

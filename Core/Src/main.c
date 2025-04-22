@@ -120,10 +120,8 @@ int main(void)
 
 
 //   addSchedulerEvent(SCORE_SCREEN_EVENT);
-   addSchedulerEvent(POLLING_GAME_EVENT);
+   addSchedulerEvent(BUILD_NEW_GAME_EVENT);
 
-
-   LCD_Draw_Game_Grid();
 
   while (1)
   {
@@ -131,7 +129,14 @@ int main(void)
 	  eventsToRun = getScheduledEvents();
 
 	  if(eventsToRun & START_MENU_EVENT){
-
+		  LCD_Start_Screen();
+		  HAL_Delay(1000);
+	  }
+	  if(eventsToRun & POLLING_MODE_SELECT_EVENT){
+		  LCD_Polling_Mode();
+	  }
+	  if(eventsToRun & BUILD_NEW_GAME_EVENT){
+		  LCD_Game_Screen();
 	  }
 	  if(eventsToRun & POLLING_GAME_EVENT){
 		  LCD_Touch_Polling_Game();
@@ -141,7 +146,7 @@ int main(void)
 		  LCD_Score_Screen();
 	  }
 	  if(eventsToRun & POLLING_RESTART_EVENT){
-
+		  LCD_Polling_Restart();
 	  }
 
     /* USER CODE BEGIN 3 */
