@@ -4,4 +4,4 @@
 ../Core/Src/ApplicationCode.c:53:6:LCD_Touch_Polling_Demo	8	static
 ../Core/Src/ApplicationCode.c:71:6:LCD_TOUCH_POLLING_DEMO	8	static
 ../Core/Src/ApplicationCode.c:86:6:LCD_Touch_Polling_Game	8	static
-../Core/Src/ApplicationCode.c:105:6:EXTI0_IRQHandler	8	static
+../Core/Src/ApplicationCode.c:105:6:EXTI0_IRQHandler	16	static

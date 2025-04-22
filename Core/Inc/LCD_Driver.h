@@ -117,7 +117,12 @@ void Init_Grid_Pos();
 
 void LCD_Draw_Game_Grid();
 
-void LCD_Game_won();
+bool LCD_Game_Won_Check_Row(uint8_t row, uint8_t player);
+bool LCD_Game_Won_Check_Column(uint8_t column, uint8_t player);
+bool LCD_Game_Won_Check_Up_Right_Diagonal(uint8_t column, uint8_t row, uint8_t player);
+bool LCD_Game_Won_Check_Up_Left_Diagonal(uint8_t column, uint8_t row, uint8_t player);
+
+void LCD_Game_won(uint8_t column, uint8_t row, uint8_t player);
 
 bool LCD_Space_Available_Game_Grid();
 uint8_t LCD_Get_Row_Game_Grid();

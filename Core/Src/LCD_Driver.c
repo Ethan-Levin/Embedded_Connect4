@@ -31,7 +31,10 @@ uint16_t frameBuffer[LCD_PIXEL_WIDTH*LCD_PIXEL_HEIGHT] = {0};			//16bpp pixel fo
 
 static grid_t grid[7][6];
 static chip_to_drop_t chip;
-uint8_t playerTurn = PLAYER_RED;
+uint8_t playerTurn         = PLAYER_RED;
+uint8_t redScore          = 0;
+uint8_t yellowScore       = 0;
+uint8_t Consecutive       = 0;
 
 void Init_Chip_To_Drop(){
 	chip.yPos        = CHIP_Y_POS;
@@ -363,17 +366,124 @@ bool LCD_Space_Available_Game_Grid(){
 }
 
 uint8_t LCD_Get_Row_Game_Grid(){
-	for(int i = 0; i<ROWS; i++){
-		if(grid[chip.column][i].playerColor == PLAYER_EMPTY){
+	for(int j = 0; j<ROWS; j++){
+		if(grid[chip.column][j].playerColor == PLAYER_EMPTY){
 			//returns the first empty square
-			return i;
+			return j;
 		}
 	}
 	return -1; //out of bounds but should not occur
 }
 
-void LCD_Game_Won(){
 
+bool LCD_Game_Won_Check_Row(uint8_t row, uint8_t player){
+	Consecutive = 0;
+	//Resets consecutive
+	for(int i=0; i<COLUMNS; i++){
+		if(grid[i][row].playerColor == player){
+			Consecutive++;
+		}
+		else{
+			Consecutive = 0;
+		}
+
+		if(Consecutive == 4){
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool LCD_Game_Won_Check_Column(uint8_t column, uint8_t player){
+	Consecutive = 0;
+	for(int j=0; j<ROWS; j++){
+		if(grid[column][j].playerColor == player){
+			Consecutive++;
+		}
+		else{
+			Consecutive = 0;
+		}
+
+		if(Consecutive == 4){
+			return true;
+		}
+	}
+
+	return false;
+}
+
+
+bool LCD_Game_Won_Check_Up_Right_Diagonal(uint8_t column, uint8_t row, uint8_t player){
+	Consecutive = 0;
+	//Resets consecutive
+	//need to find the bottom left spot and will go up right from there
+	while( (row  > 0) && (column >= 0) ){
+		//look until we get to the bottom left
+		row--;
+		column--;
+	}
+
+	while(row < ROWS && column < COLUMNS){
+		//keep going until we encounter top right edge
+		if(grid[column][row].playerColor == player){
+			Consecutive++;
+		}
+		else{
+			Consecutive = 0;
+		}
+
+		if(Consecutive == 4){
+			return true;
+		}
+		row++;
+		column++;
+	}
+	return false;
+}
+
+bool LCD_Game_Won_Check_Up_Left_Diagonal(uint8_t column, uint8_t row, uint8_t player){
+	Consecutive = 0;
+	//Reset consecutive
+	//need to find the bottom left spot and will go up right from there
+	while( (row > 0) && (column + 1 < COLUMNS) ){
+		//loop until bottom right, stop once we might go out of bounds (-1 or COLUMNS)
+		row--;
+		column++;
+	}
+
+	while(row < ROWS && column > 0){
+		//keep going until we encounter top right edge
+		if(grid[column][row].playerColor == player){
+			Consecutive++;
+		}
+		else{
+			Consecutive = 0;
+		}
+
+		if(Consecutive == 4){
+			return true;
+		}
+		row++;
+		column--;
+	}
+	return false;
+}
+
+void LCD_Game_Won(uint8_t column, uint8_t row, uint8_t player){
+	//check all adjacent pieces colors
+	if(LCD_Game_Won_Check_Row(row, player)){
+		LCD_Draw_Circle_Fill(150, 150, 10, LCD_COLOR_MAGENTA);
+	}
+	if(LCD_Game_Won_Check_Column(column, player)){
+		LCD_Draw_Circle_Fill(200, 200, 10, LCD_COLOR_GREEN);
+	}
+	if(LCD_Game_Won_Check_Up_Right_Diagonal(column, row, player)){
+		LCD_Draw_Circle_Fill(125, 125, 10, LCD_COLOR_BLUE);
+	}
+	if(LCD_Game_Won_Check_Up_Left_Diagonal(column, row, player)){
+		LCD_Draw_Circle_Fill(100, 100, 10, LCD_COLOR_CYAN);
+	}
 }
 
 void LCD_Insert_Chip_Game_Grid(){
@@ -389,7 +499,7 @@ void LCD_Insert_Chip_Game_Grid(){
 			//update playerTurn to be c other player
 			LCD_Draw_Chip_To_Drop();
 			//Update the display for the chip to drop
-			LCD_Game_Won();
+			LCD_Game_Won(chip.column, row, PLAYER_RED);
 		}
 		else{
 			//if its Yellows turn it will draw yellow
@@ -400,7 +510,7 @@ void LCD_Insert_Chip_Game_Grid(){
 			//update playerTurn to be c other player
 			LCD_Draw_Chip_To_Drop();
 			//Update the display for the chip to drop
-			LCD_Game_Won();
+			LCD_Game_Won(chip.column, row, PLAYER_YELLOW);
 			//Check if game is over
 		}
 	}

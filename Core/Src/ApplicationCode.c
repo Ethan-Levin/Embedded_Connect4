@@ -104,7 +104,13 @@ void LCD_Touch_Polling_Game(){
 
 void EXTI0_IRQHandler(){
 	HAL_NVIC_DisableIRQ(EXTI0_IRQn);
-	LCD_Insert_Chip_Game_Grid();
+
+	uint32_t eventsToRun = getScheduledEvents();
+	//only want to do stuff if the game screen is active
+	if(eventsToRun & POLLING_GAME_EVENT){
+		LCD_Insert_Chip_Game_Grid();
+		//allows for you to insert a chip if the game is active
+    }
 	__HAL_GPIO_EXTI_CLEAR_FLAG(GPIO_PIN_0);
 	HAL_NVIC_EnableIRQ(EXTI0_IRQn);
 }
