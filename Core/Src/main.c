@@ -118,11 +118,6 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-
-//   addSchedulerEvent(SCORE_SCREEN_EVENT);
-   addSchedulerEvent(BUILD_NEW_GAME_EVENT);
-
-
   while (1)
   {
     /* USER CODE END WHILE */
@@ -130,10 +125,17 @@ int main(void)
 
 	  if(eventsToRun & START_MENU_EVENT){
 		  LCD_Start_Screen();
-		  HAL_Delay(1000);
 	  }
 	  if(eventsToRun & POLLING_MODE_SELECT_EVENT){
 		  LCD_Polling_Mode();
+		  HAL_Delay(200);
+	  }
+	  if(eventsToRun & COLOR_SELECT_EVENT){
+		  LCD_Select_Color_Screen();
+	  }
+	  if(eventsToRun & POLLING_COLOR_SELECT_EVENT){
+		  LCD_Polling_Color();
+		  HAL_Delay(200);
 	  }
 	  if(eventsToRun & BUILD_NEW_GAME_EVENT){
 		  LCD_Game_Screen();
@@ -144,6 +146,7 @@ int main(void)
 	  }
 	  if(eventsToRun & SCORE_SCREEN_EVENT){
 		  LCD_Score_Screen();
+		  HAL_Delay(1000);
 	  }
 	  if(eventsToRun & POLLING_RESTART_EVENT){
 		  LCD_Polling_Restart();

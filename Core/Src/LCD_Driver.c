@@ -31,9 +31,13 @@ uint16_t frameBuffer[LCD_PIXEL_WIDTH*LCD_PIXEL_HEIGHT] = {0};			//16bpp pixel fo
 
 static grid_t grid[7][6];
 static chip_to_drop_t chip;
-uint8_t playerTurn         = PLAYER_RED;
+uint8_t playerTurn        = PLAYER_RED;
 uint8_t redScore          = 0;
 uint8_t yellowScore       = 0;
+
+void LCD_Set_Player(uint8_t color){
+	playerTurn = color;
+}
 
 void Init_Chip_To_Drop(){
 	chip.yPos        = CHIP_Y_POS;
@@ -525,9 +529,44 @@ void LCD_Insert_Chip_Game_Grid(){
 
 }
 void LCD_Draw_Start_Screen(){
-	LCD_Clear(0, LCD_COLOR_BLACK);
-	addSchedulerEvent(POLLING_MODE_SELECT_EVENT);
-	removeSchedulerEvent(START_MENU_EVENT);
+	LCD_Clear(0, LCD_COLOR_WHITE);
+
+	LCD_Draw_Vertical_Line(LCD_PIXEL_WIDTH/2,40,LCD_PIXEL_HEIGHT-40,LCD_COLOR_BLACK);
+	LCD_Draw_Horizontal_Line(0,40,LCD_PIXEL_WIDTH,LCD_COLOR_BLACK);
+
+	LCD_SetTextColor(LCD_COLOR_BLACK);
+	LCD_SetFont(&Font16x24);
+
+	LCD_DisplayChar(80+2,  MODE_YPOS,'M');
+	LCD_DisplayChar(100, MODE_YPOS,'O');
+	LCD_DisplayChar(120-2, MODE_YPOS,'D');
+	LCD_DisplayChar(135-2, MODE_YPOS,'E');
+
+	LCD_DisplayChar(50, 160,'1');
+	LCD_DisplayChar(180, 160,'2');
+}
+
+void LCD_Draw_Select_Color_Screen(){
+	LCD_Clear(0, LCD_COLOR_RED);
+
+	LCD_Draw_Vertical_Line(LCD_PIXEL_WIDTH/2,0,LCD_PIXEL_HEIGHT,LCD_COLOR_BLACK);
+
+	LCD_Draw_Rectangle_Fill(LCD_PIXEL_WIDTH/2, 0, LCD_PIXEL_WIDTH/2, LCD_PIXEL_HEIGHT, LCD_COLOR_YELLOW);
+
+	LCD_SetTextColor(LCD_COLOR_BLACK);
+	LCD_SetFont(&Font16x24);
+
+	LCD_DisplayChar(95,  PICK_YPOS,'P');
+	LCD_DisplayChar(110, PICK_YPOS,'I');
+	LCD_DisplayChar(125, PICK_YPOS,'C');
+	LCD_DisplayChar(140, PICK_YPOS,'K');
+
+	LCD_DisplayChar(90,  COLOR_YPOS,'C');
+	LCD_DisplayChar(105, COLOR_YPOS,'O');
+	LCD_DisplayChar(120, COLOR_YPOS,'L');
+	LCD_DisplayChar(135, COLOR_YPOS,'O');
+	LCD_DisplayChar(150, COLOR_YPOS,'R');
+
 }
 
 void LCD_Draw_Game_Grid(){
@@ -553,8 +592,6 @@ void LCD_Draw_Game_Grid(){
 			LCD_Draw_Circle_Fill(grid[i][j].xPos, LCD_PIXEL_HEIGHT-grid[i][j].yPos, CIRCLE_RADIUS, LCD_COLOR_WHITE);
 		}
 	}
-	addSchedulerEvent(POLLING_GAME_EVENT);
-	removeSchedulerEvent(BUILD_NEW_GAME_EVENT);
 }
 
 void LCD_Draw_Score_Screen(){
@@ -602,10 +639,6 @@ void LCD_Draw_Score_Screen(){
 	LCD_DisplayChar(105, GAME_YPOS,'A');
 	LCD_DisplayChar(120, GAME_YPOS,'M');
 	LCD_DisplayChar(135, GAME_YPOS,'E');
-
-
-	removeSchedulerEvent(SCORE_SCREEN_EVENT);
-	addSchedulerEvent(POLLING_RESTART_EVENT);
 }
 
 

@@ -10,7 +10,7 @@
 /* Static variables */
 
 
-extern void initialise_monitor_handles(void); 
+extern void initialise_monitor_handles(void);
 
 #if COMPILE_TOUCH_FUNCTIONS == 1
 static STMPE811_TouchData StaticTouchData;
@@ -24,6 +24,7 @@ void ApplicationInit(void)
     LCD_Clear(0,LCD_COLOR_WHITE);
 
     buttonInit();
+    addSchedulerEvent(START_MENU_EVENT);
 
     #if COMPILE_TOUCH_FUNCTIONS == 1
 	InitializeLCDTouch();
@@ -42,15 +43,26 @@ void LCD_Visual_Demo(void)
 
 void LCD_Start_Screen(){
 	LCD_Draw_Start_Screen();
+	addSchedulerEvent(POLLING_MODE_SELECT_EVENT);
+	removeSchedulerEvent(START_MENU_EVENT);
+}
+
+void LCD_Select_Color_Screen(){
+	LCD_Draw_Select_Color_Screen();
+	removeSchedulerEvent(COLOR_SELECT_EVENT);
+	addSchedulerEvent(POLLING_COLOR_SELECT_EVENT);
 }
 
 void LCD_Game_Screen(){
 	LCD_Draw_Game_Grid();
+	removeSchedulerEvent(BUILD_NEW_GAME_EVENT);
+	addSchedulerEvent(POLLING_GAME_EVENT);
 }
-
 
 void LCD_Score_Screen(){
 	LCD_Draw_Score_Screen();
+	removeSchedulerEvent(SCORE_SCREEN_EVENT);
+	addSchedulerEvent(POLLING_RESTART_EVENT);
 }
 
 void buttonInit(){
@@ -91,6 +103,34 @@ void LCD_TOUCH_POLLING_DEMO(){
 		}
 }
 
+
+void LCD_Polling_Mode(){
+	if (returnTouchStateAndLocation(&StaticTouchData) == STMPE811_State_Pressed) {
+		/* Touch valid */
+		if(StaticTouchData.x < LCD_PIXEL_WIDTH/2){
+			//Bottom half
+			removeSchedulerEvent(POLLING_MODE_SELECT_EVENT);
+			addSchedulerEvent(COLOR_SELECT_EVENT);
+		}
+	}
+}
+
+void LCD_Polling_Color(){
+	if (returnTouchStateAndLocation(&StaticTouchData) == STMPE811_State_Pressed) {
+			/* Touch valid */
+			if(StaticTouchData.x < LCD_PIXEL_WIDTH/2){
+				//left side
+				LCD_Set_Player(PLAYER_RED);
+			}
+			else{
+				//right side
+				LCD_Set_Player(PLAYER_YELLOW);
+			}
+			removeSchedulerEvent(POLLING_COLOR_SELECT_EVENT);
+			addSchedulerEvent(BUILD_NEW_GAME_EVENT);
+		}
+}
+
 void LCD_Touch_Polling_Game(){
 	/* If touch pressed */
 	if (returnTouchStateAndLocation(&StaticTouchData) == STMPE811_State_Pressed) {
@@ -103,10 +143,9 @@ void LCD_Touch_Polling_Game(){
 			//right side
 			LCD_Update_Chip_To_Drop(RIGHT);
 		}
-	} else {
-		/* Touch not pressed */
-		//do nothing
 	}
+	/* Touch not pressed */
+	//do nothing
 }
 
 void LCD_Polling_Restart(){
@@ -114,22 +153,12 @@ void LCD_Polling_Restart(){
 		/* Touch valid */
 		if(StaticTouchData.y < LCD_PIXEL_HEIGHT/2){
 			//Bottom half
-			addSchedulerEvent(START_MENU_EVENT);
 			removeSchedulerEvent(POLLING_RESTART_EVENT);
+			addSchedulerEvent(START_MENU_EVENT);
 		}
 	}
 }
 
-void LCD_Polling_Mode(){
-	if (returnTouchStateAndLocation(&StaticTouchData) == STMPE811_State_Pressed) {
-		/* Touch valid */
-		if(StaticTouchData.x < LCD_PIXEL_WIDTH/2){
-			//Bottom half
-			addSchedulerEvent(BUILD_NEW_GAME_EVENT);
-			removeSchedulerEvent(POLLING_MODE_SELECT_EVENT);
-		}
-	}
-}
 
 
 void EXTI0_IRQHandler(){

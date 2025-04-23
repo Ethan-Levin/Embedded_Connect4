@@ -60,6 +60,11 @@
 #define RIGHT                   0
 #define LEFT                    1
 
+#define MODE_YPOS               20
+
+#define PICK_YPOS               20
+#define COLOR_YPOS              40
+
 #define SCORE_YPOS              80
 #define TIMER_YPOS              20
 #define NEW_YPOS                230
@@ -133,8 +138,12 @@ bool LCD_Game_Won_Check_Up_Right_Diagonal(uint8_t column, uint8_t row, uint8_t p
 bool LCD_Game_Won_Check_Up_Left_Diagonal(uint8_t column, uint8_t row, uint8_t player);
 bool LCD_Game_won(uint8_t column, uint8_t row, uint8_t player);
 
+void LCD_Set_Player(uint8_t color);
+
 void LCD_Draw_Start_Screen();
+void LCD_Draw_Select_Color_Screen();
 void LCD_Draw_Score_Screen();
+
 void LCD_Draw_Game_Grid();
 void Init_Grid();
 
