@@ -139,6 +139,7 @@ int main(void)
 	  }
 	  if(eventsToRun & BUILD_NEW_GAME_EVENT){
 		  LCD_Game_Screen();
+		  __HAL_TIM_GET_COUNTER(&htim2);
 	  }
 	  if(eventsToRun & POLLING_GAME_EVENT){
 		  LCD_Touch_Polling_Game();

@@ -538,7 +538,7 @@ void LCD_Draw_Start_Screen(){
 	LCD_SetFont(&Font16x24);
 
 	LCD_DisplayChar(80+2,  MODE_YPOS,'M');
-	LCD_DisplayChar(100, MODE_YPOS,'O');
+	LCD_DisplayChar(100,   MODE_YPOS,'O');
 	LCD_DisplayChar(120-2, MODE_YPOS,'D');
 	LCD_DisplayChar(135-2, MODE_YPOS,'E');
 
