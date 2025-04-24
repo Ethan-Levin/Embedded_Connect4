@@ -15,6 +15,7 @@
 
 #include "Scheduler.h"
 #include <stdbool.h>
+#include <stdio.h>
 
 #define COMPILE_TOUCH_FUNCTIONS COMPILE_TOUCH
 #define TOUCH_INTERRUPT_ENABLED COMPILE_TOUCH_INTERRUPT_SUPPORT
@@ -159,6 +160,11 @@ void LCD_Draw_Chip_To_Drop();
 void LCD_Clear_Chip_To_Drop();
 void LCD_Update_Chip_To_Drop_Column(int direction);
 void LCD_Update_Chip_To_Drop(int direction);
+
+//get Time functions
+void LCD_Update_Game_Start_Time();
+void LCD_Update_Game_End_Time();
+void LCD_Update_Game_Length_Time();
 
 
 void LCD_Error_Handler(void);

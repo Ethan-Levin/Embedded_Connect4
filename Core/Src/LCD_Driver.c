@@ -35,6 +35,22 @@ uint8_t playerTurn        = PLAYER_RED;
 uint8_t redScore          = 0;
 uint8_t yellowScore       = 0;
 
+uint32_t gameStartTime    = 0;
+uint32_t gameEndTime      = 0;
+uint32_t gameLengthTime   = 0;
+
+void LCD_Update_Game_Start_Time(){
+	gameStartTime = HAL_GetTick();
+}
+
+void LCD_Update_Game_End_Time(){
+	gameEndTime = HAL_GetTick();
+}
+
+void LCD_Update_Game_Length_Time(){
+	gameLengthTime = gameEndTime - gameStartTime;
+}
+
 void LCD_Set_Player(uint8_t color){
 	playerTurn = color;
 }
@@ -477,15 +493,23 @@ bool LCD_Game_Won_Check_Up_Left_Diagonal(uint8_t column, uint8_t row, uint8_t pl
 bool LCD_Game_Won(uint8_t column, uint8_t row, uint8_t player){
 	//check all adjacent pieces colors
 	if(LCD_Game_Won_Check_Row(row, player)){
+		LCD_Update_Game_End_Time();
+		//Get the game length as soon as a win is detected
 		return true;
 	}
 	else if(LCD_Game_Won_Check_Column(column, player)){
+		LCD_Update_Game_End_Time();
+		//Get the game length as soon as a win is detected
 		return true;
 	}
 	else if(LCD_Game_Won_Check_Up_Right_Diagonal(column, row, player)){
+		LCD_Update_Game_End_Time();
+		//Get the game length as soon as a win is detected
 		return true;
 	}
 	else if(LCD_Game_Won_Check_Up_Left_Diagonal(column, row, player)){
+		LCD_Update_Game_End_Time();
+		//Get the game length as soon as a win is detected
 		return true;
 	}
 return false;
@@ -595,6 +619,8 @@ void LCD_Draw_Game_Grid(){
 }
 
 void LCD_Draw_Score_Screen(){
+	LCD_Update_Game_Length_Time();
+
 	LCD_Clear(0, LCD_COLOR_GREY);
 
 	LCD_SetTextColor(LCD_COLOR_BLACK);
@@ -606,11 +632,22 @@ void LCD_Draw_Score_Screen(){
 	LCD_DisplayChar(130,TIMER_YPOS,'e');
 	LCD_DisplayChar(140,TIMER_YPOS,'r');
 
+
+	char seconds[1000];
+	//converts the ms to seconds and allowing for 1000 seconds to be displayed
+	sprintf(seconds, "%ld", gameLengthTime/1000);
+
+	for(uint32_t i = 0; seconds[i]!='\0'; i++){
+		LCD_DisplayChar(105+i*15, TIMER_YPOS+30, seconds[i]);
+	}
+
 	LCD_DisplayChar(95,SCORE_YPOS,'S');
 	LCD_DisplayChar(107,SCORE_YPOS,'c');
 	LCD_DisplayChar(117,SCORE_YPOS,'o');
 	LCD_DisplayChar(127,SCORE_YPOS,'r');
 	LCD_DisplayChar(135,SCORE_YPOS,'e');
+
+
 
 	LCD_Draw_Circle_Fill(103, SCORE_YPOS+60, 16, LCD_COLOR_BLACK);
 	LCD_Draw_Circle_Fill(144, SCORE_YPOS+60, 16, LCD_COLOR_BLACK);
@@ -619,11 +656,21 @@ void LCD_Draw_Score_Screen(){
 	LCD_Draw_Circle_Fill(103, SCORE_YPOS+60, 15, LCD_COLOR_RED);
 	LCD_Draw_Circle_Fill(144, SCORE_YPOS+60, 15, LCD_COLOR_YELLOW);
 
-	uint16_t redScoreToDisplay = '0' + redScore;
-	uint16_t yellowScoreToDisplay = '0' + yellowScore;
+	char redScoreToDisplay[4];
+	//displays up to 9999
+	sprintf(redScoreToDisplay, "%d", redScore);
+	for(int i = 0; redScoreToDisplay[i] != '\0'; i++){
+		LCD_DisplayChar(97+i*15, SCORE_YPOS+51, redScoreToDisplay[i]);
+	}
 
-	LCD_DisplayChar(97, SCORE_YPOS+51, redScoreToDisplay);
-	LCD_DisplayChar(137, SCORE_YPOS+51, yellowScoreToDisplay);
+	char yellowScoreToDisplay[4];
+	sprintf(yellowScoreToDisplay, "%d", yellowScore);
+	for(int i = 0; redScoreToDisplay[i] != '\0'; i++){
+		LCD_DisplayChar(137+i*15, SCORE_YPOS+51, yellowScoreToDisplay[i]);
+	}
+
+//	LCD_DisplayChar(97, SCORE_YPOS+51, redScoreToDisplay);
+//	LCD_DisplayChar(137, SCORE_YPOS+51, yellowScoreToDisplay);
 	//RIGHT NOW ONLY CAN DISPLAY UP TO 9 FOR BOTH SIDES OTHERWISE OVERFLOW
 	LCD_DisplayChar(116, SCORE_YPOS+48, '-');
 

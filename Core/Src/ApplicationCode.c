@@ -54,6 +54,8 @@ void LCD_Select_Color_Screen(){
 }
 
 void LCD_Game_Screen(){
+	LCD_Update_Game_Start_Time();
+	//update the game starting time
 	LCD_Draw_Game_Grid();
 	removeSchedulerEvent(BUILD_NEW_GAME_EVENT);
 	addSchedulerEvent(POLLING_GAME_EVENT);
