@@ -139,6 +139,9 @@ bool LCD_Game_Won_Check_Up_Right_Diagonal(uint8_t column, uint8_t row, uint8_t p
 bool LCD_Game_Won_Check_Up_Left_Diagonal(uint8_t column, uint8_t row, uint8_t player);
 bool LCD_Game_won(uint8_t column, uint8_t row, uint8_t player);
 
+bool LCD_Game_Tie();
+//detects if a tie has occured
+
 void LCD_Set_Player(uint8_t color);
 
 void LCD_Draw_Start_Screen();

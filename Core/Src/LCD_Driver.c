@@ -276,7 +276,6 @@ void LCD_Update_Chip_To_Drop_Column(int direction){
 
 void LCD_Update_Chip_To_Drop(int dir){
 	LCD_Clear_Chip_To_Drop();
-	//HAL_Delay(10);
 	LCD_Update_Chip_To_Drop_Column(dir);
 	LCD_Draw_Chip_To_Drop();
 }
@@ -376,6 +375,20 @@ void LCD_DisplayChar(uint16_t Xpos, uint16_t Ypos, uint8_t Ascii)
 {
   Ascii -= 32;
   LCD_Draw_Char(Xpos, Ypos, &LCD_Currentfonts->table[Ascii * LCD_Currentfonts->Height]);
+}
+
+bool LCD_Game_Tie(){
+	for(int i = 0; i<7; i++){
+		//go through each of the the top most slots and see if its filled, if its not filled return false
+		if(grid[i][5].playerColor == PLAYER_EMPTY){
+			//if a slot is empty then there is no way for a tie yet
+			return false;
+		}
+	}
+	LCD_Update_Game_End_Time();
+	//stop the clock as a tie occured
+	return true;
+	//if all are filled return true
 }
 
 bool LCD_Space_Available_Game_Grid(){
@@ -549,6 +562,11 @@ void LCD_Insert_Chip_Game_Grid(){
 				addSchedulerEvent(SCORE_SCREEN_EVENT);
 			}			//Check if game is over
 		}
+		if(LCD_Game_Tie()){
+			removeSchedulerEvent(POLLING_GAME_EVENT);
+			addSchedulerEvent(SCORE_SCREEN_EVENT);
+			//go to next screen if a tie occurs
+		}
 	}
 
 }
@@ -634,7 +652,7 @@ void LCD_Draw_Score_Screen(){
 
 
 	char seconds[1000];
-	//converts the ms to seconds and allowing for 1000 seconds to be displayed
+	//converts the ms to seconds and allowing for 1000*9 seconds to be displayed
 	sprintf(seconds, "%ld", gameLengthTime/1000);
 
 	for(uint32_t i = 0; seconds[i]!='\0'; i++){
