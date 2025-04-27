@@ -40,11 +40,12 @@ uint32_t gameStartTime    = 0;
 uint32_t gameEndTime      = 0;
 uint32_t gameLengthTime   = 0;
 
-void LCD_Animate_Falling(){
-	for(int i = 0; i<250; i++){
-				LCD_Draw_Background_Grid(50, 50+i, CIRCLE_RADIUS, LCD_COLOR_WHITE);
-				LCD_Draw_Background_Grid(50,50+i+1, CIRCLE_RADIUS, LCD_COLOR_RED);
-				HAL_Delay(5);
+void LCD_Animate_Falling(uint16_t Xpos, uint16_t Ypos, uint16_t radius, uint16_t color){
+	for(int i = chip.yPos; i<Ypos; i++){
+		LCD_DRAW_CIRCLE_SKIP_BLUE_BLACK(Xpos, i, radius, LCD_COLOR_WHITE);
+		LCD_DRAW_CIRCLE_SKIP_BLUE_BLACK(Xpos, i+1, radius, color);
+		//HAL_Delay(5);
+		//seems to break the code if you include the delay
 	}
 }
 
@@ -289,7 +290,7 @@ void LCD_Update_Chip_To_Drop(int dir){
 	LCD_Draw_Chip_To_Drop();
 }
 
-void LCD_Draw_Background_Grid(uint16_t Xpos, uint16_t Ypos, uint16_t radius, uint16_t color){
+void LCD_DRAW_CIRCLE_SKIP_BLUE_BLACK(uint16_t Xpos, uint16_t Ypos, uint16_t radius, uint16_t color){
 	for(int16_t y=-radius; y<=radius; y++)
 	    {
 	        for(int16_t x=-radius; x<=radius; x++)
@@ -297,7 +298,8 @@ void LCD_Draw_Background_Grid(uint16_t Xpos, uint16_t Ypos, uint16_t radius, uin
 	        	LCD_Get_Pixel_Color(x+Xpos, y+Ypos);
 	            if(x*x+y*y <= radius*radius)
 	            {
-	            	if(color_of_pixel != LCD_COLOR_BLUE){
+	            	if(color_of_pixel != LCD_COLOR_BLUE && color_of_pixel != LCD_COLOR_BLACK){
+	            		//ignore background grid and lines
 	            		LCD_Draw_Pixel(x+Xpos, y+Ypos, color);
 	            	}
 	            }
@@ -563,7 +565,8 @@ void LCD_Insert_Chip_Game_Grid(){
 		//returns the highest row for a column
 		if(playerTurn == PLAYER_RED){
 			//if its Reds turn it will draw red
-			LCD_Draw_Circle_Fill(grid[chip.column][row].xPos, LCD_PIXEL_HEIGHT-grid[chip.column][row].yPos, CIRCLE_RADIUS, LCD_COLOR_RED);
+			//LCD_Draw_Circle_Fill(grid[chip.column][row].xPos, LCD_PIXEL_HEIGHT-grid[chip.column][row].yPos, CIRCLE_RADIUS, LCD_COLOR_RED);
+			LCD_Animate_Falling(grid[chip.column][row].xPos, LCD_PIXEL_HEIGHT-grid[chip.column][row].yPos, CIRCLE_RADIUS, LCD_COLOR_RED);
 			grid[chip.column][row].playerColor = PLAYER_RED;
 			playerTurn = PLAYER_YELLOW;
 			//update playerTurn to be other player
@@ -577,7 +580,8 @@ void LCD_Insert_Chip_Game_Grid(){
 		}
 		else{
 			//if its Yellows turn it will draw yellow
-			LCD_Draw_Circle_Fill(grid[chip.column][row].xPos, LCD_PIXEL_HEIGHT-grid[chip.column][row].yPos, CIRCLE_RADIUS, LCD_COLOR_YELLOW);
+			//LCD_Draw_Circle_Fill(grid[chip.column][row].xPos, LCD_PIXEL_HEIGHT-grid[chip.column][row].yPos, CIRCLE_RADIUS, LCD_COLOR_YELLOW);
+			LCD_Animate_Falling(grid[chip.column][row].xPos, LCD_PIXEL_HEIGHT-grid[chip.column][row].yPos, CIRCLE_RADIUS, LCD_COLOR_YELLOW);
 			grid[chip.column][row].playerColor = PLAYER_YELLOW;
 			//update the memory of the grid
 			playerTurn = PLAYER_RED;

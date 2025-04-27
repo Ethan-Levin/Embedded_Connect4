@@ -142,10 +142,10 @@ bool LCD_Game_won(uint8_t column, uint8_t row, uint8_t player);
 bool LCD_Game_Tie();
 //detects if a tie has occured
 
-void LCD_Animate_Falling();
+void LCD_Animate_Falling(uint16_t Xpos, uint16_t Ypos, uint16_t radius, uint16_t color);
 
 void LCD_Get_Pixel_Color(uint16_t x, uint16_t y);
-void LCD_Draw_Background_Grid(uint16_t Xpos, uint16_t Ypos, uint16_t radius, uint16_t color);
+void LCD_DRAW_CIRCLE_SKIP_BLUE_BLACK(uint16_t Xpos, uint16_t Ypos, uint16_t radius, uint16_t color);
 
 void LCD_Draw_Pixel(uint16_t x, uint16_t y, uint16_t color);
 
