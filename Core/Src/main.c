@@ -117,7 +117,7 @@ int main(void)
 #endif
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-
+  LCD_Draw_Game_Grid();
   while (1)
   {
     /* USER CODE END WHILE */

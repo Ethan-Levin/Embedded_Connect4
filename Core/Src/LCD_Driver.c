@@ -35,9 +35,18 @@ uint8_t playerTurn        = PLAYER_RED;
 uint8_t redScore          = 0;
 uint8_t yellowScore       = 0;
 
+uint16_t color_of_pixel   = 0;
 uint32_t gameStartTime    = 0;
 uint32_t gameEndTime      = 0;
 uint32_t gameLengthTime   = 0;
+
+void LCD_Animate_Falling(){
+	for(int i = 0; i<250; i++){
+				LCD_Draw_Background_Grid(50, 50+i, CIRCLE_RADIUS, LCD_COLOR_WHITE);
+				LCD_Draw_Background_Grid(50,50+i+1, CIRCLE_RADIUS, LCD_COLOR_RED);
+				HAL_Delay(5);
+	}
+}
 
 void LCD_Update_Game_Start_Time(){
 	gameStartTime = HAL_GetTick();
@@ -280,11 +289,30 @@ void LCD_Update_Chip_To_Drop(int dir){
 	LCD_Draw_Chip_To_Drop();
 }
 
+void LCD_Draw_Background_Grid(uint16_t Xpos, uint16_t Ypos, uint16_t radius, uint16_t color){
+	for(int16_t y=-radius; y<=radius; y++)
+	    {
+	        for(int16_t x=-radius; x<=radius; x++)
+	        {
+	        	LCD_Get_Pixel_Color(x+Xpos, y+Ypos);
+	            if(x*x+y*y <= radius*radius)
+	            {
+	            	if(color_of_pixel != LCD_COLOR_BLUE){
+	            		LCD_Draw_Pixel(x+Xpos, y+Ypos, color);
+	            	}
+	            }
+	        }
+	    }
+}
+
 void LCD_Draw_Pixel(uint16_t x, uint16_t y, uint16_t color)
 {
 	frameBuffer[y*LCD_PIXEL_WIDTH+x] = color;  //You cannot do x*y to set the pixel.
 }
 
+void LCD_Get_Pixel_Color(uint16_t x, uint16_t y){
+	color_of_pixel = frameBuffer[y*LCD_PIXEL_WIDTH+x];  //Returns the pixel color
+}
 /*
  * These functions are simple examples. Most computer graphics like OpenGl and stm's graphics library use a state machine. Where you first call some function like SetColor(color), SetPosition(x,y), then DrawSqure(size)
  * Instead all of these are explicit where color, size, and position are passed in.
@@ -298,7 +326,7 @@ void LCD_Draw_Circle_Fill(uint16_t Xpos, uint16_t Ypos, uint16_t radius, uint16_
         {
             if(x*x+y*y <= radius*radius)
             {
-            	LCD_Draw_Pixel(x+Xpos, y+Ypos, color);
+				LCD_Draw_Pixel(x+Xpos, y+Ypos, color);
             }
         }
     }

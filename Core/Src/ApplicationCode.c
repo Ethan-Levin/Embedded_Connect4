@@ -42,9 +42,10 @@ void LCD_Visual_Demo(void)
 }
 
 void LCD_Start_Screen(){
-	LCD_Draw_Start_Screen();
-	addSchedulerEvent(POLLING_MODE_SELECT_EVENT);
-	removeSchedulerEvent(START_MENU_EVENT);
+	LCD_Animate_Falling();
+//	LCD_Draw_Start_Screen();
+//	addSchedulerEvent(POLLING_MODE_SELECT_EVENT);
+//	removeSchedulerEvent(START_MENU_EVENT);
 }
 
 void LCD_Select_Color_Screen(){
