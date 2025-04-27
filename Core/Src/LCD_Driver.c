@@ -34,7 +34,6 @@ static chip_to_drop_t chip;
 uint8_t playerTurn        = PLAYER_RED;
 uint8_t redScore          = 0;
 uint8_t yellowScore       = 0;
-
 uint16_t color_of_pixel   = 0;
 uint32_t gameStartTime    = 0;
 uint32_t gameEndTime      = 0;
@@ -63,6 +62,10 @@ void LCD_Update_Game_Length_Time(){
 
 void LCD_Set_Player(uint8_t color){
 	playerTurn = color;
+}
+
+uint8_t LCD_Get_player(){
+	return playerTurn;
 }
 
 void Init_Chip_To_Drop(){

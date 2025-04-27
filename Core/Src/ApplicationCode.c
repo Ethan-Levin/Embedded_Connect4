@@ -16,6 +16,9 @@ extern void initialise_monitor_handles(void);
 static STMPE811_TouchData StaticTouchData;
 #endif // COMPILE_TOUCH_FUNCTIONS
 
+uint8_t playerMode        = 0;
+
+
 void ApplicationInit(void)
 {
 	initialise_monitor_handles(); // Allows printf functionality
@@ -109,11 +112,15 @@ void LCD_TOUCH_POLLING_DEMO(){
 void LCD_Polling_Mode(){
 	if (returnTouchStateAndLocation(&StaticTouchData) == STMPE811_State_Pressed) {
 		/* Touch valid */
-		if(StaticTouchData.x < LCD_PIXEL_WIDTH/2){
-			//Bottom half
-			removeSchedulerEvent(POLLING_MODE_SELECT_EVENT);
-			addSchedulerEvent(COLOR_SELECT_EVENT);
+		if(StaticTouchData.x > LCD_PIXEL_WIDTH/2){
+			//2 player mode
+			playerMode = TWOPLAYER;
 		}
+		else{
+			playerMode = ONEPLAYER;
+		}
+		removeSchedulerEvent(POLLING_MODE_SELECT_EVENT);
+		addSchedulerEvent(COLOR_SELECT_EVENT);
 	}
 }
 

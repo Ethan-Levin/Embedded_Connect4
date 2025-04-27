@@ -16,6 +16,9 @@
 #ifndef INC_APPLICATIONCODE_H_
 #define INC_APPLICATIONCODE_H_
 
+#define ONEPLAYER                 1
+#define TWOPLAYER                 2
+
 void ApplicationInit(void);
 void LCD_Visual_Demo(void);
 

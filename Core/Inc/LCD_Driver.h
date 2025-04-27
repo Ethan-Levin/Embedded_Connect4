@@ -72,6 +72,7 @@
 #define GAME_YPOS               250
 
 #define RESTART_BUTTON_YPOS     200
+
 /* Timing configuration from datahseet
   HSYNC=10 (9+1)
   HBP=20 (29-10+1)
@@ -150,6 +151,7 @@ void LCD_DRAW_CIRCLE_SKIP_BLUE_BLACK(uint16_t Xpos, uint16_t Ypos, uint16_t radi
 void LCD_Draw_Pixel(uint16_t x, uint16_t y, uint16_t color);
 
 void LCD_Set_Player(uint8_t color);
+uint8_t LCD_Get_player();
 
 void LCD_Draw_Start_Screen();
 void LCD_Draw_Select_Color_Screen();
