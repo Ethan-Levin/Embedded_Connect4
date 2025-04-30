@@ -11,6 +11,6 @@
 ../Core/Src/ApplicationCode.c:126:6:LCD_TOUCH_POLLING_DEMO	8	static
 ../Core/Src/ApplicationCode.c:141:6:LCD_Polling_Mode	8	static
 ../Core/Src/ApplicationCode.c:156:6:LCD_Polling_Color	8	static
-../Core/Src/ApplicationCode.c:172:6:LCD_Polling_Game	8	static
-../Core/Src/ApplicationCode.c:189:6:LCD_Polling_Restart	8	static
+../Core/Src/ApplicationCode.c:174:6:LCD_Polling_Game	8	static
+../Core/Src/ApplicationCode.c:191:6:LCD_Polling_Restart	8	static
 ../Core/Src/ApplicationCode.c:202:6:EXTI0_IRQHandler	16	static

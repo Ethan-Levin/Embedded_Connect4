@@ -164,6 +164,8 @@ uint8_t LCD_Find_Best_Move();
 
 
 bool LCD_Space_Available_Game_Grid();
+bool LCD_Space_Available_Column(uint8_t columnSelected);
+
 uint8_t LCD_Get_Row_Game_Grid();
 
 void LCD_Insert_Chip_Game_Grid();

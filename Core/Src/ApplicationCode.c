@@ -81,14 +81,14 @@ void AI_Drop_Chip(uint8_t columnToDrop){
 	//gets the current column
 	while(currentColumn != columnToDrop){
 		if(columnToDrop < currentColumn){
-			LCD_Update_Chip_To_Drop(LEFT);
 			currentColumn--;
+			LCD_Update_Chip_To_Drop(LEFT);
 //			HAL_Delay(100);
 			//move left until we get to the column we want
 		}
 		else{
-			LCD_Update_Chip_To_Drop(RIGHT);
 			currentColumn++;
+			LCD_Update_Chip_To_Drop(RIGHT);
 //			HAL_Delay(100);
 			//unable to get the delay working for the display so it will appear to just jump there
 		}
@@ -159,10 +159,12 @@ void LCD_Polling_Color(){
 			if(StaticTouchData.x < LCD_PIXEL_WIDTH/2){
 				//left side
 				LCD_Set_Player(PLAYER_RED);
+				computerColor = PLAYER_YELLOW;
 			}
 			else{
 				//right side
 				LCD_Set_Player(PLAYER_YELLOW);
+				computerColor = PLAYER_RED;
 			}
 			removeSchedulerEvent(POLLING_COLOR_SELECT_EVENT);
 			addSchedulerEvent(BUILD_NEW_GAME_EVENT);
@@ -197,8 +199,6 @@ void LCD_Polling_Restart(){
 	}
 }
 
-
-
 void EXTI0_IRQHandler(){
 	HAL_NVIC_DisableIRQ(EXTI0_IRQn);
 
@@ -207,9 +207,14 @@ void EXTI0_IRQHandler(){
 	if(eventsToRun & POLLING_GAME_EVENT){
 		LCD_Insert_Chip_Game_Grid();
 		//allows for you to insert a chip if the game is active
-		if(playerMode == ONEPLAYER){
+
+		if(playerMode == ONEPLAYER && computerColor == LCD_Get_Player()){
 			//if one player mode then the AI will now act after this button got pressed
-			AI_Find_Best_Spot();
+			eventsToRun = getScheduledEvents(); //check if player won before allowing the AI to go
+			if(!(eventsToRun & SCORE_SCREEN_EVENT)){
+				AI_Find_Best_Spot();
+				//Only go if the game isnt over
+			}
 		}
     }
 	__HAL_GPIO_EXTI_CLEAR_FLAG(GPIO_PIN_0);

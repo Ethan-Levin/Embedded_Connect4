@@ -38,6 +38,7 @@ uint16_t color_of_pixel   = 0;
 uint32_t gameStartTime    = 0;
 uint32_t gameEndTime      = 0;
 uint32_t gameLengthTime   = 0;
+extern RNG_HandleTypeDef hrng; //lets LCD_Driver know hrng is initialized and defined in main.c
 
 void LCD_Animate_Falling(uint16_t Xpos, uint16_t Ypos, uint16_t radius, uint16_t color){
 	for(int i = chip.yPos; i<Ypos; i++){
@@ -69,7 +70,18 @@ uint8_t LCD_Get_Player(){
 }
 
 uint8_t LCD_Find_Best_Move(){
+	uint32_t rngNumber = -1;
+	uint8_t bestColumn = -1;
 
+	while(true){
+		HAL_RNG_GenerateRandomNumber(&hrng, &rngNumber);
+		bestColumn = rngNumber % COLUMNS; //get the random number in terms of actual rows we can use (0-7)
+		if(LCD_Space_Available_Column(bestColumn)){
+			//if its valid leave the loop
+			break;
+		}
+	}
+	return bestColumn;
 }
 
 void Init_Chip_To_Drop(){
@@ -431,6 +443,15 @@ bool LCD_Game_Tie(){
 	//stop the clock as a tie occured
 	return true;
 	//if all are filled return true
+}
+
+bool LCD_Space_Available_Column(uint8_t columnSelected){
+	if(grid[columnSelected][5].playerColor != PLAYER_EMPTY){
+		//5 is the highest row so we need to see if its occupied and if it is false
+			return false;
+		}
+		//if there is space return true
+		return true;
 }
 
 bool LCD_Space_Available_Game_Grid(){
