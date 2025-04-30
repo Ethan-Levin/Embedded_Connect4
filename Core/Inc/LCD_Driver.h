@@ -160,6 +160,8 @@ void LCD_Draw_Score_Screen();
 void LCD_Draw_Game_Grid();
 void Init_Grid();
 
+uint8_t LCD_Find_Best_Move();
+
 
 bool LCD_Space_Available_Game_Grid();
 uint8_t LCD_Get_Row_Game_Grid();

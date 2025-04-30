@@ -83,13 +83,14 @@ void AI_Drop_Chip(uint8_t columnToDrop){
 		if(columnToDrop < currentColumn){
 			LCD_Update_Chip_To_Drop(LEFT);
 			currentColumn--;
-			HAL_Delay(100);
+//			HAL_Delay(100);
 			//move left until we get to the column we want
 		}
 		else{
 			LCD_Update_Chip_To_Drop(RIGHT);
 			currentColumn++;
-			HAL_Delay(100);
+//			HAL_Delay(100);
+			//unable to get the delay working for the display so it will appear to just jump there
 		}
 	}
 	LCD_Insert_Chip_Game_Grid();
@@ -97,7 +98,9 @@ void AI_Drop_Chip(uint8_t columnToDrop){
 }
 
 void AI_Find_Best_Spot(){
-	AI_Drop_Chip(1);
+	uint8_t columnToDrop = LCD_Find_Best_Move();
+	AI_Drop_Chip(columnToDrop);
+	//drops the chip after finding the best move
 }
 
 

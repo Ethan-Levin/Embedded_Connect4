@@ -68,6 +68,10 @@ uint8_t LCD_Get_Player(){
 	return playerTurn;
 }
 
+uint8_t LCD_Find_Best_Move(){
+
+}
+
 void Init_Chip_To_Drop(){
 	chip.yPos        = CHIP_Y_POS;
 	chip.xPos        = CHIP_X_POS(CHIP_X_START_COLUMN);
@@ -85,6 +89,7 @@ void Init_Grid(){
 		}
 	}
 }
+
 
 void LCD_GPIO_Init(void)
 {
