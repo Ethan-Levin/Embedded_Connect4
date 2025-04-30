@@ -17,6 +17,7 @@ static STMPE811_TouchData StaticTouchData;
 #endif // COMPILE_TOUCH_FUNCTIONS
 
 uint8_t playerMode        = 0;
+uint8_t computerColor     = 0;
 
 
 void ApplicationInit(void)
@@ -62,6 +63,7 @@ void LCD_Game_Screen(){
 	LCD_Draw_Game_Grid();
 	removeSchedulerEvent(BUILD_NEW_GAME_EVENT);
 	addSchedulerEvent(POLLING_GAME_EVENT);
+
 }
 
 void LCD_Score_Screen(){
@@ -73,6 +75,31 @@ void LCD_Score_Screen(){
 void buttonInit(){
 	Button_Init();
 }
+
+void AI_Drop_Chip(uint8_t columnToDrop){
+	uint8_t currentColumn =  LCD_Get_Chip_To_Drop_Column();
+	//gets the current column
+	while(currentColumn != columnToDrop){
+		if(columnToDrop < currentColumn){
+			LCD_Update_Chip_To_Drop(LEFT);
+			currentColumn--;
+			HAL_Delay(100);
+			//move left until we get to the column we want
+		}
+		else{
+			LCD_Update_Chip_To_Drop(RIGHT);
+			currentColumn++;
+			HAL_Delay(100);
+		}
+	}
+	LCD_Insert_Chip_Game_Grid();
+	//after its in place then drop it
+}
+
+void AI_Find_Best_Spot(){
+	AI_Drop_Chip(1);
+}
+
 
 #if COMPILE_TOUCH_FUNCTIONS == 1
 void LCD_Touch_Polling_Demo(void)
@@ -108,7 +135,6 @@ void LCD_TOUCH_POLLING_DEMO(){
 		}
 }
 
-
 void LCD_Polling_Mode(){
 	if (returnTouchStateAndLocation(&StaticTouchData) == STMPE811_State_Pressed) {
 		/* Touch valid */
@@ -140,7 +166,7 @@ void LCD_Polling_Color(){
 		}
 }
 
-void LCD_Touch_Polling_Game(){
+void LCD_Polling_Game(){
 	/* If touch pressed */
 	if (returnTouchStateAndLocation(&StaticTouchData) == STMPE811_State_Pressed) {
 		/* Touch valid */
@@ -178,6 +204,10 @@ void EXTI0_IRQHandler(){
 	if(eventsToRun & POLLING_GAME_EVENT){
 		LCD_Insert_Chip_Game_Grid();
 		//allows for you to insert a chip if the game is active
+		if(playerMode == ONEPLAYER){
+			//if one player mode then the AI will now act after this button got pressed
+			AI_Find_Best_Spot();
+		}
     }
 	__HAL_GPIO_EXTI_CLEAR_FLAG(GPIO_PIN_0);
 	HAL_NVIC_EnableIRQ(EXTI0_IRQn);

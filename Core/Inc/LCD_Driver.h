@@ -151,7 +151,7 @@ void LCD_DRAW_CIRCLE_SKIP_BLUE_BLACK(uint16_t Xpos, uint16_t Ypos, uint16_t radi
 void LCD_Draw_Pixel(uint16_t x, uint16_t y, uint16_t color);
 
 void LCD_Set_Player(uint8_t color);
-uint8_t LCD_Get_player();
+uint8_t LCD_Get_Player();
 
 void LCD_Draw_Start_Screen();
 void LCD_Draw_Select_Color_Screen();
@@ -172,6 +172,7 @@ void LCD_Draw_Chip_To_Drop();
 void LCD_Clear_Chip_To_Drop();
 void LCD_Update_Chip_To_Drop_Column(int direction);
 void LCD_Update_Chip_To_Drop(int direction);
+uint8_t LCD_Get_Chip_To_Drop_Column();
 
 //get Time functions
 void LCD_Update_Game_Start_Time();

@@ -140,7 +140,7 @@ int main(void)
 		  LCD_Game_Screen();
 	  }
 	  if(eventsToRun & POLLING_GAME_EVENT){
-		  LCD_Touch_Polling_Game();
+		  LCD_Polling_Game();
 		  HAL_Delay(100);
 	  }
 	  if(eventsToRun & SCORE_SCREEN_EVENT){

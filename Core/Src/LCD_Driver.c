@@ -64,7 +64,7 @@ void LCD_Set_Player(uint8_t color){
 	playerTurn = color;
 }
 
-uint8_t LCD_Get_player(){
+uint8_t LCD_Get_Player(){
 	return playerTurn;
 }
 
@@ -272,6 +272,10 @@ void LCD_Draw_Chip_To_Drop(){
 
 void LCD_Clear_Chip_To_Drop(){
 	LCD_Draw_Circle_Fill(chip.xPos, chip.yPos, CIRCLE_RADIUS, LCD_COLOR_WHITE);
+}
+
+uint8_t LCD_Get_Chip_To_Drop_Column(){
+	return chip.column;
 }
 
 void LCD_Update_Chip_To_Drop_Column(int direction){

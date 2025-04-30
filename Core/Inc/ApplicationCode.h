@@ -29,9 +29,12 @@ void LCD_Score_Screen();
 
 void buttonInit();
 
+void AI_Find_Best_Spot();
+void AI_Drop_Chip(uint8_t column);
+
 void LCD_Polling_Mode();
 void LCD_Polling_Color();
-void LCD_Touch_Polling_Game();
+void LCD_Polling_Game();
 void LCD_Polling_Restart();
 
 #if (COMPILE_TOUCH_FUNCTIONS == 1)
